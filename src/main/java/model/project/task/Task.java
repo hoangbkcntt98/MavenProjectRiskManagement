@@ -18,6 +18,7 @@ public class Task {
 	double ef;
 	double lf;
 	double slack=-1;
+	double prob;
 	List<Task> predecessor;
 	List<Task> successor;
 	public Task(int id, String name,double optimistic, double mostlikely,
@@ -126,6 +127,14 @@ public class Task {
 
 	public void setStandardDeviation(double standardDeviation) {
 		this.standardDeviation = standardDeviation;
+	}
+
+	public double getProb() {
+		return prob;
+	}
+
+	public void setProb(double prob) {
+		this.prob = prob;
 	}
 	
 	

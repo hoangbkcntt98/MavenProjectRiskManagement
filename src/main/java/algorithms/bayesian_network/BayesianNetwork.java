@@ -43,14 +43,8 @@ public class BayesianNetwork {
 		Table table = node.newDistribution().getTable();
 		table.set(0, prob);
 		table.set(1, 1-prob);
-//		TableAccessor acessor = new TableAccessor(table, nodes.toArray(new Node[0]));
-//		acessor.copyFrom(Doubles.toArray(probList));
-//		table.set(prob,getNodeState(node, "True"));
-//		table.set(1-prob,getNodeState(node, "False"));
 		TableIterator iter = new TableIterator(table, nodes.toArray(new Node[0]));
 		iter.copyFrom(Doubles.toArray(probList));
-//		TableIterator iter = new TableIterator(table,new Node[] {node});
-//		iter.copyFrom(new double[] {prob,1-prob});
 		node.setDistribution(table);
 	}
 	public Node getNode(String name) {

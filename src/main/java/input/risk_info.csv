@@ -1,0 +1,12 @@
+dimension_id,task_id,risk_relate_file_name,risk_distribution_file_name
+1,A,risk_relations.txt,risk_distribution.txt
+2,B,risk_relations.txt,risk_distribution.txt
+1,C,risk_relations.txt,risk_distribution.txt
+2,D,risk_relations.txt,risk_distribution.txt
+1,E,risk_relations.txt,risk_distribution.txt
+2,F,risk_relations.txt,risk_distribution.txt
+1,G,risk_relations.txt,risk_distribution.txt
+2,H,risk_relations.txt,risk_distribution.txt
+1,I,risk_relations.txt,risk_distribution.txt
+2,J,risk_relations.txt,risk_distribution.txt
+1,K,risk_relations.txt,risk_distribution.txt
