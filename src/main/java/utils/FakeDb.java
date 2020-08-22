@@ -1,12 +1,11 @@
 package utils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.List;
 
 import config.Configuaration;
-import project.Risk;
+import model.project.risk.Risk;
 
 public class FakeDb {
 	public static void generateRiskDistribution(List<Risk> relationRisk) {

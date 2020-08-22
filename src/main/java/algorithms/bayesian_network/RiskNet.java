@@ -1,7 +1,6 @@
-package bayesian_network;
+package algorithms.bayesian_network;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +19,7 @@ import com.bayesserver.inference.QueryOptions;
 import com.bayesserver.inference.QueryOutput;
 import com.bayesserver.inference.RelevanceTreeInferenceFactory;
 
-import project.Risk;
+import model.project.risk.Risk;
 
 public class RiskNet extends BayesianNetwork{
 	public List<Risk> risks;
@@ -57,9 +56,10 @@ public class RiskNet extends BayesianNetwork{
 		}
 		addCptTable(nodes,probList);
 	}
-	public double calcProb() {
-		createNet();
-		Risk risk = risks.get(risks.size()-1);
+	public double calcProb(Risk risk) {
+		if(risk.getParentRisk()==null) {
+			return risk.getProbability();
+		}
 		List<Risk> childParent = risk.getParentRisk();
 		childParent.add(risk);
 		String child = risk.getId();
@@ -108,5 +108,10 @@ public class RiskNet extends BayesianNetwork{
 			}
 		}
 		return calcResult;
+	}
+	public void updateRiskProb() {
+		for(Risk r:risks) {
+			r.setProbability(calcProb(r));
+		}
 	}
 }

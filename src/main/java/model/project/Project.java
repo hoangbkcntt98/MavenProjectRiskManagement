@@ -1,6 +1,8 @@
-package project;
+package model.project;
 
 import java.util.List;
+
+import model.project.task.Task;
 
 public class Project {
 	String projectPath ;

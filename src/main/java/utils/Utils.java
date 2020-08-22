@@ -14,11 +14,11 @@ import org.apache.commons.math3.special.Erf;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 
+import algorithms.bayesian_network.RiskNet;
+import algorithms.pert.Pert;
 import config.Configuaration;
-import pert.Pert;
-import project.Risk;
-import project.RiskModel;
-import project.Task;
+import model.project.risk.Risk;
+import model.project.task.Task;
 public class Utils {
 	List<String> getListFromString(String str) {
 			return Arrays.asList(str.split(","));
@@ -182,6 +182,9 @@ public class Utils {
 	            probMap.put(nextRecord[0], childList);
 	            } 
 			for(Risk risk:risks) {
+				if(risk.getParentRisk()==null) {
+					risk.setProbability(probMap.get(risk.getId()).get(0));
+				}
 				risk.setProbabilityList(probMap.get(risk.getId()));
 			}
 			
@@ -243,16 +246,18 @@ public class Utils {
 		}
 	}
 	public static void main(String args[]) {
+//		FakeDb.generateRiskDistribution(allRisks);
 		List<Task> tasks = Utils.readTaskListInfo(Configuaration.inputPath+"0.csv");
 		List<Task> criticlePath = Pert.excute(tasks);
 		Pert.showCriticalPath(criticlePath);
 		List<Risk> allRisks = Utils.readRiskRelationInfo(Configuaration.inputPath+"risk_relation.csv");
-//		FakeDb.generateRiskDistribution(allRisks);
 		Utils.readRiskDistribution(Configuaration.inputPath+"risk_distribution.csv", allRisks);
-		RiskModel riskModel = new RiskModel("Riskmanagement of project",allRisks);
-		riskModel.calcProb();
+		RiskNet riskModel = new RiskNet("Riskmanagement of project",allRisks);
+		riskModel.createNet();
+		Risk riskTotalNode = allRisks.get(allRisks.size()-1);
+		riskModel.updateRiskProb();
+		System.out.println("Probablity of all Risks is :"+riskTotalNode.getProbability());
 		
-		System.out.println();
 	}
 
 }

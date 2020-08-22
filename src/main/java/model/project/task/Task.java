@@ -1,8 +1,8 @@
-package project;
+package model.project.task;
 
 import java.util.List;
 
-import pert.Pert;
+import algorithms.pert.Pert;
 
 public class Task {
 	int id;

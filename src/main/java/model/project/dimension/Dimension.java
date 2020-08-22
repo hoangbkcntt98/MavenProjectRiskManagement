@@ -1,4 +1,6 @@
-package project;
+package model.project.dimension;
+
+import model.project.Project;
 
 public class Dimension extends Project{
 

@@ -1,4 +1,4 @@
-package project;
+package model.project.risk;
 
 import java.util.List;
 import com.bayesserver.Node;

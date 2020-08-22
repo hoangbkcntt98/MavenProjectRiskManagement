@@ -1,4 +1,4 @@
-package bayesian_network;
+package algorithms.bayesian_network;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,12 +1,12 @@
-package pert;
+package algorithms.pert;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import config.Configuaration;
-import project.Task;
+import model.project.task.Task;
+
 
 public class Pert {
 	public static double estimateDuration(double opt, double mos, double pes) {
