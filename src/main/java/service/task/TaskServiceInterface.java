@@ -1,9 +1,9 @@
-package service.project.task;
+package service.task;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import model.project.task.Task;
+import model.task.Task;
 
 public interface TaskServiceInterface {
 	public List<Task> readTaskListInfo(String path);

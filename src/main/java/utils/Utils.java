@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.math3.special.Erf;
 
-import model.project.risk.Risk;
+import model.risk.Risk;
 public class Utils {
 	List<String> getListFromString(String str) {
 			return Arrays.asList(str.split(","));

@@ -6,9 +6,9 @@ import java.util.Map;
 import algorithms.bayesian_network.TaskNet;
 import algorithms.pert.Pert;
 import config.Configuaration;
-import model.project.Project;
-import model.project.dimension.Dimension;
-import model.project.task.Task;
+import model.Project;
+import model.dimension.Dimension;
+import model.task.Task;
 
 public class Main {
 	public static void main(String args[]) {

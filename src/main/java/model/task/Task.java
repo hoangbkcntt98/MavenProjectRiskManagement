@@ -1,4 +1,4 @@
-package model.project.task;
+package model.task;
 
 import java.util.List;
 

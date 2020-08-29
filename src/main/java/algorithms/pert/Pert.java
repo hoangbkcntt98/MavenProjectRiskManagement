@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import config.Configuaration;
-import model.project.task.Task;
+import model.task.Task;
 
 
 public class Pert {

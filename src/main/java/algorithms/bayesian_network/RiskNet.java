@@ -19,7 +19,7 @@ import com.bayesserver.inference.QueryOptions;
 import com.bayesserver.inference.QueryOutput;
 import com.bayesserver.inference.RelevanceTreeInferenceFactory;
 
-import model.project.risk.Risk;
+import model.risk.Risk;
 
 public class RiskNet extends BayesianNetwork{
 	public List<Risk> risks;

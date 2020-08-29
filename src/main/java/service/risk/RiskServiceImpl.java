@@ -1,4 +1,4 @@
-package service.project.risk;
+package service.risk;
 
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 
-import model.project.risk.Risk;
+import model.risk.Risk;
 import utils.Utils;
 
 public class RiskServiceImpl implements RiskServiceInterface{

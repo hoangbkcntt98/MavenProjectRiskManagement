@@ -19,7 +19,7 @@ import com.bayesserver.inference.QueryOptions;
 import com.bayesserver.inference.QueryOutput;
 import com.bayesserver.inference.RelevanceTreeInferenceFactory;
 
-import model.project.task.Task;
+import model.task.Task;
 
 public class TaskNet extends BayesianNetwork{
 	private Task task;

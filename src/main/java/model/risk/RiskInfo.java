@@ -1,4 +1,4 @@
-package model.project.risk;
+package model.risk;
 
 import java.util.ArrayList;
 import java.util.List;

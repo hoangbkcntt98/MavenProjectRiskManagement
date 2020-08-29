@@ -1,4 +1,4 @@
-package service.project.dimension;
+package service.dimension;
 
 public interface DimensionServiceInterface {
 

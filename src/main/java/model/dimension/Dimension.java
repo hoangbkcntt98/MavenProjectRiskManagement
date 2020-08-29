@@ -1,4 +1,4 @@
-package model.project.dimension;
+package model.dimension;
 
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -12,12 +12,12 @@ import com.opencsv.CSVReaderBuilder;
 import algorithms.bayesian_network.DimensionNet;
 import algorithms.bayesian_network.RiskNet;
 import config.Configuaration;
-import model.project.Project;
-import model.project.risk.Risk;
-import model.project.risk.RiskInfo;
-import model.project.task.Task;
-import service.project.risk.RiskServiceImpl;
-import service.project.risk.RiskServiceInterface;
+import model.Project;
+import model.risk.Risk;
+import model.risk.RiskInfo;
+import model.task.Task;
+import service.risk.RiskServiceImpl;
+import service.risk.RiskServiceInterface;
 import utils.Utils;
 
 public class Dimension extends Project{

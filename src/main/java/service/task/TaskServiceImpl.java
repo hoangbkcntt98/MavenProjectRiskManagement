@@ -1,4 +1,4 @@
-package service.project.task;
+package service.task;
 
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 
-import model.project.risk.Risk;
-import model.project.task.Task;
+import model.risk.Risk;
+import model.task.Task;
 import utils.Utils;
 
 public class TaskServiceImpl implements TaskServiceInterface{

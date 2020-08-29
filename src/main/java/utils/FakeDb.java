@@ -6,9 +6,9 @@ import java.util.List;
 
 import algorithms.pert.Pert;
 import config.Configuaration;
-import model.project.Project;
-import model.project.risk.Risk;
-import model.project.task.Task;
+import model.Project;
+import model.risk.Risk;
+import model.task.Task;
 
 public class FakeDb {
 	public static void generateRiskDistribution(List<Risk> relationRisk) {

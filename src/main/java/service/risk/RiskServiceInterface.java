@@ -1,8 +1,8 @@
-package service.project.risk;
+package service.risk;
 
 import java.util.List;
 
-import model.project.risk.Risk;
+import model.risk.Risk;
 
 public interface RiskServiceInterface {
 	public List<Risk> readRiskRelationInfo(String path);

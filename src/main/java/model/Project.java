@@ -1,12 +1,12 @@
-package model.project;
+package model;
 
 import java.util.List;
 
 import algorithms.pert.Pert;
 import config.Configuaration;
-import model.project.task.Task;
-import service.project.task.TaskServiceImpl;
-import service.project.task.TaskServiceInterface;
+import model.task.Task;
+import service.task.TaskServiceImpl;
+import service.task.TaskServiceInterface;
 import utils.Utils;
 
 public class Project {

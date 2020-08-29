@@ -1,4 +1,4 @@
-package service.project;
+package service;
 
 public interface ProjectServiceInteface {
 
