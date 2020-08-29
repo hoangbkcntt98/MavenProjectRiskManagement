@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 
+import model.project.risk.Risk;
 import model.project.task.Task;
 import utils.Utils;
 
@@ -79,6 +80,35 @@ public class TaskServiceImpl implements TaskServiceInterface{
 	@Override
 	public double getTaskProb(double time,Task task) {
 		return Utils.gauss(time,task.getExpectedTime(),task.getStandardDeviation());
+	}
+
+	@Override
+	public void readTaskDistribution(String path, List<Task> tasks) {
+		try {
+			FileReader fileReader = new FileReader(path);
+			CSVReader csvReader = new CSVReaderBuilder(fileReader)
+                    .build(); 
+			String [] nextRecord;
+			Map<String,List<Double>> probMap = new HashMap<String,List<Double>>();
+			while ((nextRecord = csvReader.readNext()) != null) { 
+				ArrayList<Double> childList = new ArrayList<Double>();
+	            for(int i=1;i<nextRecord.length;i++) {
+	            	childList.add(Double.parseDouble(nextRecord[i]));
+	            	
+	            }
+	            probMap.put(nextRecord[0], childList);
+	            } 
+			for(Task task: tasks) {
+				if(task.getPredecessor()==null) {
+					task.setProb(probMap.get(task.getName()).get(0));
+				}
+				task.setProbList(probMap.get(task.getName()));
+			}
+			
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.nd4j.shade.guava.primitives.Doubles;
 
+import com.bayesserver.Link;
 import com.bayesserver.Network;
 import com.bayesserver.Node;
 import com.bayesserver.State;
@@ -27,6 +28,10 @@ public class BayesianNetwork {
 		for(String n:names) {
 			addNode(n);
 		}
+	}
+	public void addLink(Node parent, Node child)
+	{
+		bayesianNet.getLinks().add(new Link(parent,child));
 	}
 	public void addCptTable(List<Node> nodes, List<Double> probList) {
 		Table table = nodes.get(nodes.size()-1).newDistribution().getTable();

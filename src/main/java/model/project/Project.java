@@ -3,6 +3,7 @@ package model.project;
 import java.util.List;
 
 import algorithms.pert.Pert;
+import config.Configuaration;
 import model.project.task.Task;
 import service.project.task.TaskServiceImpl;
 import service.project.task.TaskServiceInterface;
@@ -22,16 +23,21 @@ public class Project {
 	public void update() {
 		TaskServiceInterface taskServices = new TaskServiceImpl();
 		this.tasks = taskServices.readTaskListInfo(projectPath);
+		taskServices.readTaskDistribution(Configuaration.inputPath+"task_distribution.csv", tasks);
 		criticalPath = Pert.excute(tasks);
 		double projectVariance=0;
 		double expectedTime =0;
 		double sigma;
-		for(Task t : tasks) {
+		for(Task t : criticalPath) {
 			projectVariance += t.getVariance();
 			expectedTime += t.getExpectedTime();
 		}
 		sigma = Math.sqrt(projectVariance);
 		prob = Utils.gauss(deadline, expectedTime, sigma);
+	}
+	public void readTaskDistribution(String path,List<Task> task) {
+		TaskServiceInterface taskServices = new TaskServiceImpl();
+		taskServices.readTaskDistribution(Configuaration.inputPath+"task_distribution.csv", tasks);
 	}
 	public List<Task> getTasks() {
 		return tasks;

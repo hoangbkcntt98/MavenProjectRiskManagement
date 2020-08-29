@@ -21,6 +21,7 @@ public class Task {
 	double prob;
 	List<Task> predecessor;
 	List<Task> successor;
+	List<Double> probList;
 	public Task(int id, String name,double optimistic, double mostlikely,
 			double pessimistic) {
 		super();
@@ -136,6 +137,15 @@ public class Task {
 	public void setProb(double prob) {
 		this.prob = prob;
 	}
+
+	public List<Double> getProbList() {
+		return probList;
+	}
+
+	public void setProbList(List<Double> probList) {
+		this.probList = probList;
+	}
+	
 	
 	
 	

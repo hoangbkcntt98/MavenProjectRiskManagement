@@ -43,7 +43,7 @@ public class Dimension extends Project{
 			for(RiskInfo r: riskInfoList) {
 				if(r.check(this.dimensionId,t.getName())) {
 					checkRisk =1;
-//					System.out.println("d :"+this.dimensionId+" task: "+t.getName());
+					
 					double riskProb = getRiskProb(Configuaration.inputPath+"risk_relation.csv", Configuaration.inputPath+"risk_distribution.csv");
 					DNet.setRiskProb(riskProb);
 					DNet.setTaskProb(taskProb);
@@ -51,6 +51,8 @@ public class Dimension extends Project{
 				}
 			}
 			if(checkRisk ==0) {
+//				System.out.println("d :"+this.dimensionId+" task: "+t.getName());
+//				System.out.println("taskProb no risk "+taskProb);
 				t.setProb(taskProb);
 			}
 		}
@@ -58,9 +60,7 @@ public class Dimension extends Project{
 	public double getRiskProb(String relatePath,String disPath) {
 		RiskServiceInterface riskServices = new RiskServiceImpl();
 		// get informations of risk from data input
-//		List<Risk> allRisks = riskServices.readRiskRelationInfo(Configuaration.inputPath+"risk_relation.csv");
 		List<Risk> allRisks = riskServices.readRiskRelationInfo(relatePath);
-//		riskServices.readRiskDistribution(Configuaration.inputPath+"risk_distribution.csv", allRisks);
 		riskServices.readRiskDistribution(disPath, allRisks);
 		// init bayesian network for all risks
 		RiskNet riskModel = new RiskNet("Riskmanagement of project",allRisks);
@@ -68,7 +68,6 @@ public class Dimension extends Project{
 		// calc prob of all risks and update probs
 		riskModel.updateRiskProb();
 		double result = allRisks.get(allRisks.size()-1).getProbability();
-//		System.out.println(result);
 		return result;
 	}
 	public List<RiskInfo> readRiskInfo(String path) {
@@ -87,6 +86,17 @@ public class Dimension extends Project{
 			System.out.println(e);
 		}
 		return riskInfoList;
+	}
+	public static List<Double> getTaskProbFromDimensionList(List<Dimension> dimensionList,String name) {
+		List<Double> probList = new ArrayList<Double>();
+		for(Dimension d : dimensionList) {
+			for(Task t: d.getTasks()) {
+				if(t.getName().equals(name)) {
+					probList.add(t.getProb());
+				}
+			}
+		}
+		return probList;
 	}
 	public Map<String, Double> getTaskDeadlineMap() {
 		return taskDeadlineMap;
