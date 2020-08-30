@@ -24,16 +24,14 @@ public class Dimension extends Project{
 	public String dimensionId;
 	public Map<String,Double> taskDeadlineMap;
 	public Dimension(String path,double deadline,String dimensionId) {
-		super(path,deadline);
+//		super(path,deadline);
+		this.taskRelatePath = path;
 		this.dimensionId = dimensionId;
 	}
 	public void calcProb() {
 		update();
 		// calc prob
 		List<Task> tasks = getTasks();
-		
-		// tinh toan rui ro cho tung task trong demension 
-		// readfile risk_info neu dimension id == dimension_id thi cho them risk_prob 
 		List<RiskInfo> riskInfoList = readRiskInfo(Configuaration.inputPath+"risk_info.csv");
 		int checkRisk;
 		for(Task t:tasks) {

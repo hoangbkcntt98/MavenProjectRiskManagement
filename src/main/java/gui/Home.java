@@ -1,8 +1,9 @@
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -12,15 +13,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.JTextPane;
-import java.awt.Font;
-import java.awt.SystemColor;
+
+import config.Configuaration;
+import model.Project;
 
 public class Home extends JFrame implements ActionListener {
 
@@ -30,12 +30,14 @@ public class Home extends JFrame implements ActionListener {
 	private JButton DInfoButton;
 	private JButton riskInfoButton;
 	private JButton riskDisButton;
+	private JButton taskDisButton;
 	private JButton riskRelateButton;
 	private JFileChooser fc;
 	private String riskInfo;
 	private String taskInfo;
 	private String riskRelate;
 	private String riskDis;
+	private String taskDis;
 	private String DInfo;
 	private JTextArea log;
 	private StringBuilder logStr;
@@ -133,6 +135,15 @@ public class Home extends JFrame implements ActionListener {
 		autoInput.addActionListener(this);
 		autoInput.setBounds(299, 199, 89, 23);
 		input.add(autoInput);
+		
+		JLabel taskDistribute = new JLabel("Task Distribution");
+		taskDistribute.setBounds(286, 25, 112, 27);
+		input.add(taskDistribute);
+		
+		taskDisButton = new JButton("Import");
+		taskDisButton.addActionListener(this);
+		taskDisButton.setBounds(377, 27, 89, 23);
+		input.add(taskDisButton);
 
 		JPanel logPanel = new JPanel();
 		logPanel.setBounds(0, 233, 549, 158);
@@ -159,7 +170,7 @@ public class Home extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 		if (e.getSource() != exeButton) {
-			fc = new JFileChooser();
+			fc = new JFileChooser(Configuaration.inputPath);
 			int returnVal = fc.showOpenDialog(Home.this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				logStr = new StringBuilder();
@@ -167,6 +178,11 @@ public class Home extends JFrame implements ActionListener {
 				if (e.getSource() == taskInfoButton) {
 					taskInfo = file.getPath();
 					addLog("Task info:\n" + "Importing file ..." + taskInfo + "\n");
+
+				}
+				if (e.getSource() == taskDisButton) {
+					taskDis = file.getPath();
+					addLog("Task Distribution:\n" + "Importing file ...." + taskDis + "\n");
 
 				}
 				if (e.getSource() == riskInfoButton) {
@@ -196,8 +212,16 @@ public class Home extends JFrame implements ActionListener {
 			log.append("Caculating probability ....\n");
 			log.setCaretPosition(log.getDocument().getLength());
 			try {
+				// caculate prob of each task in project 
+				Project project = new Project(taskInfo,taskDis,40);
+				project.update();
+				project.calcProb();
+				addLog("Task Network Visualization");
+				TaskNet taskNet = new TaskNet(project.getTasks());
+				
+				taskNet.run();
 				addLog("Bayesian Network Visualization ....");
-				BayesianNet bayNet = new BayesianNet();
+				this.setVisible(false);
 			} catch (Exception e2) {
 				// TODO: handle exception
 			}

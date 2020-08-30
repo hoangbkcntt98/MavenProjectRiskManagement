@@ -63,16 +63,10 @@ public class BayesianNet extends JFrame {
 
 	private JPanel contentPane;
 	Graph graph;
-
 	AbstractLayout layout;
-
-	/**
-	 * the visual component and renderer for the graph
-	 */
+	PluggableRenderer pr;
 	VisualizationViewer vv;
-
 	DefaultSettableVertexLocationFunction vertexLocations;
-
 	String instructions = "<html>" +
 
 			"<h3>Picking Mode:</h3>" + "<ul>" + "<li>Mouse1 on a Vertex selects the vertex"
@@ -85,56 +79,60 @@ public class BayesianNet extends JFrame {
 			+ "<h3>Transforming Mode:</h3>" + "<ul>" + "<li>Mouse1+drag pans the graph"
 			+ "<li>Mouse1+Shift+drag rotates the graph" + "<li>Mouse1+CTRL(or Command)+drag shears the graph" + "</ul>"
 			+ "</html>";
+	public void drawGraph() {
+		generateGraph();
+		generateVisualizationView();
+		drawToolsBar();
 
-	/**
-	 * Graph visualization 
-	 * 
-	 * @return
-	 * 
-	 */
-	public void drawGraph(JPanel content) {
-
-		// create a simple graph for the demo
+	}
+	public void generateGraph() {
 		graph = new SparseGraph();
-		Vertex[] v = createVertices(6);
+		Vertex[] v = createVertices();
 		createEdges(v);
-		final PluggableRenderer pr = new PluggableRenderer();
-//        this.layout = new StaticLayout(graph);
+	}
+	public void setContent() {
+		setContentPane(contentPane);
+	}
+	public void generateVisualizationView() {
+		pr = new PluggableRenderer();
 		this.layout = new FRLayout(graph);
-		// allows the precise setting of initial vertex locations
 		vertexLocations = new DefaultSettableVertexLocationFunction();
-
 		layout.initialize(new Dimension(600, 600));
-
 		vv = new VisualizationViewer(layout, pr);
 		vv.setBackground(Color.white);
 		vv.setPickSupport(new ShapePickSupport());
+		pr.setVertexLabelCentering(true);
 		pr.setEdgeShapeFunction(new EdgeShape.Line());
 		pr.setVertexStringer(new VertexStringer() {
-
 			public String getLabel(ArchetypeVertex v) {
-				return "Task_" + v.toString();
+				return v.toString();
 			}
 		});
+		generateVertexShape(pr);
+	}
+
+	public void generateVertexShape(PluggableRenderer pr) {
 		// change size of vertex
 		pr.setVertexShapeFunction(new AbstractVertexShapeFunction(new ConstantVertexSizeFunction(40),
 				new ConstantVertexAspectRatioFunction(1.0f)) {
-
 			public Shape getShape(Vertex v) {
 				// TODO Auto-generated method stub
-				return factory.getRectangle(v);
+				return factory.getEllipse(v);
 			}
 		});
+	}
+	
 
+	public void drawToolsBar() {
 		vv.setToolTipFunction(new DefaultToolTipFunction());
 		final GraphZoomScrollPane panel = new GraphZoomScrollPane(vv);
-		content.add(panel);
+		contentPane.add(panel);
 		final EditingModalGraphMouse graphMouse = new EditingModal();
 		graphMouse.add(new PopupGraphMousePlugin());
 		graphMouse.setVertexLocations(vertexLocations);
 		vv.setGraphMouse(graphMouse);
 		graphMouse.setMode(ModalGraphMouse.Mode.TRANSFORMING);
-		
+
 		final ScalingControl scaler = new CrossoverScalingControl();
 		JButton plus = new JButton("+");
 		plus.addActionListener(new ActionListener() {
@@ -170,16 +168,33 @@ public class BayesianNet extends JFrame {
 		controls.add(modeBox);
 		controls.add(help);
 		controls.add(back);
-		content.add(controls, BorderLayout.SOUTH);
+		contentPane.add(controls, BorderLayout.SOUTH);
 	}
+	public void createMainMenu() {
+		JMenu menu = new JMenu("File");
+		menu.add(new AbstractAction("Make Image") {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser chooser = new JFileChooser();
+				int option = chooser.showSaveDialog(BayesianNet.this);
+				if (option == JFileChooser.APPROVE_OPTION) {
+					File file = chooser.getSelectedFile();
+					writeJPEGImage(file);
+				}
+			}
+		});
 
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.add(menu);
+		setJMenuBar(menuBar);
+	}
 	/**
 	 * create some vertices
 	 * 
 	 * @param count how many to create
 	 * @return the Vertices in an array
 	 */
-	private Vertex[] createVertices(int count) {
+	public Vertex[] createVertices() {
+		int count = 6;
 		Vertex[] v = new Vertex[count];
 		for (int i = 0; i < count; i++) {
 			v[i] = graph.addVertex(new SparseVertex());
@@ -192,7 +207,7 @@ public class BayesianNet extends JFrame {
 	 * 
 	 * @param v an array of Vertices to connect
 	 */
-	void createEdges(Vertex[] v) {
+	public void createEdges(Vertex[] v) {
 		graph.addEdge(new DirectedSparseEdge(v[0], v[1]));
 		graph.addEdge(new DirectedSparseEdge(v[0], v[2]));
 		graph.addEdge(new DirectedSparseEdge(v[2], v[3]));
@@ -240,26 +255,6 @@ public class BayesianNet extends JFrame {
 	}
 
 	/**
-	 * a driver for this demo
-	 */
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					BayesianNet frame = new BayesianNet();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the frame.
 	 */
 	public BayesianNet() {
@@ -273,25 +268,28 @@ public class BayesianNet extends JFrame {
 		double height = screenSize.getHeight();
 		setSize((int) width - 200, (int) height - 200);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		drawGraph(contentPane);
+	}
 
-		JMenu menu = new JMenu("File");
-		menu.add(new AbstractAction("Make Image") {
-			public void actionPerformed(ActionEvent e) {
-				JFileChooser chooser = new JFileChooser();
-				int option = chooser.showSaveDialog(BayesianNet.this);
-				if (option == JFileChooser.APPROVE_OPTION) {
-					File file = chooser.getSelectedFile();
-					writeJPEGImage(file);
+	/**
+	 * a driver for this demo
+	 */
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					BayesianNet frame = new BayesianNet();
+					frame.drawGraph();
+					frame.setContent();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 		});
-
-		JMenuBar menuBar = new JMenuBar();
-		menuBar.add(menu);
-		setJMenuBar(menuBar);
-		setVisible(true);
-		setContentPane(contentPane);
 	}
 
 	private class EditingModal extends EditingModalGraphMouse {
