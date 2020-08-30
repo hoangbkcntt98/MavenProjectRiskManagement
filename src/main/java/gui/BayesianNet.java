@@ -67,6 +67,7 @@ public class BayesianNet extends JFrame {
 	PluggableRenderer pr;
 	VisualizationViewer vv;
 	DefaultSettableVertexLocationFunction vertexLocations;
+	EditingModalGraphMouse graphMouse;
 	String instructions = "<html>" +
 
 			"<h3>Picking Mode:</h3>" + "<ul>" + "<li>Mouse1 on a Vertex selects the vertex"
@@ -101,16 +102,17 @@ public class BayesianNet extends JFrame {
 		vv = new VisualizationViewer(layout, pr);
 		vv.setBackground(Color.white);
 		vv.setPickSupport(new ShapePickSupport());
-		pr.setVertexLabelCentering(true);
+		
 		pr.setEdgeShapeFunction(new EdgeShape.Line());
-		pr.setVertexStringer(new VertexStringer() {
-			public String getLabel(ArchetypeVertex v) {
-				return v.toString();
-			}
-		});
+		pr.setVertexLabelCentering(true);
+		setVertexLable();
 		generateVertexShape(pr);
+		vv.setToolTipFunction(new DefaultToolTipFunction());
+		final GraphZoomScrollPane panel = new GraphZoomScrollPane(vv);
+		contentPane.add(panel);
+		
 	}
-
+	
 	public void generateVertexShape(PluggableRenderer pr) {
 		// change size of vertex
 		pr.setVertexShapeFunction(new AbstractVertexShapeFunction(new ConstantVertexSizeFunction(40),
@@ -124,15 +126,13 @@ public class BayesianNet extends JFrame {
 	
 
 	public void drawToolsBar() {
-		vv.setToolTipFunction(new DefaultToolTipFunction());
-		final GraphZoomScrollPane panel = new GraphZoomScrollPane(vv);
-		contentPane.add(panel);
-		final EditingModalGraphMouse graphMouse = new EditingModal();
-		graphMouse.add(new PopupGraphMousePlugin());
+		
+		graphMouse = new EditingModal();
+		
 		graphMouse.setVertexLocations(vertexLocations);
 		vv.setGraphMouse(graphMouse);
+		setMousePlugin();
 		graphMouse.setMode(ModalGraphMouse.Mode.TRANSFORMING);
-
 		final ScalingControl scaler = new CrossoverScalingControl();
 		JButton plus = new JButton("+");
 		plus.addActionListener(new ActionListener() {
@@ -170,6 +170,9 @@ public class BayesianNet extends JFrame {
 		controls.add(back);
 		contentPane.add(controls, BorderLayout.SOUTH);
 	}
+	public void setMousePlugin() {
+		graphMouse.add(new PopupGraphMousePlugin());
+	}
 	public void createMainMenu() {
 		JMenu menu = new JMenu("File");
 		menu.add(new AbstractAction("Make Image") {
@@ -186,6 +189,14 @@ public class BayesianNet extends JFrame {
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(menu);
 		setJMenuBar(menuBar);
+	}
+	
+	public void setVertexLable() {
+		pr.setVertexStringer(new VertexStringer() {
+			public String getLabel(ArchetypeVertex v) {
+				return v.toString();
+			}
+		});
 	}
 	/**
 	 * create some vertices
@@ -292,78 +303,7 @@ public class BayesianNet extends JFrame {
 		});
 	}
 
-	private class EditingModal extends EditingModalGraphMouse {
-		public EditingModal() {
-			super();
-		}
+	
 
-		/**
-		 * @return Returns the modeBox.
-		 */
-		public JComboBox getModeComboBox() {
-			if (modeBox == null) {
-				modeBox = new JComboBox(new Mode[] { Mode.TRANSFORMING, Mode.PICKING });
-				modeBox.addItemListener(getModeListener());
-			}
-			modeBox.setSelectedItem(mode);
-			return modeBox;
-		}
-
-	}
-
-	protected class PopupGraphMousePlugin extends AbstractPopupGraphMousePlugin implements MouseListener {
-
-		public PopupGraphMousePlugin() {
-			this(MouseEvent.BUTTON3_MASK);
-		}
-
-		public PopupGraphMousePlugin(int modifiers) {
-			super(modifiers);
-		}
-
-		/**
-		 * If this event is over a station (vertex), pop up a menu to allow the user to
-		 * perform a few actions; else, pop up a menu over the layout/canvas
-		 *
-		 * @param e
-		 */
-		@SuppressWarnings("unchecked")
-		protected void handlePopup(MouseEvent e) {
-			final VisualizationViewer vv = (VisualizationViewer) e.getSource();
-			final Point2D p = e.getPoint();
-			final Point2D ivp = p;
-			JPopupMenu popup = new JPopupMenu();
-
-			System.out.println("mouse event!");
-
-			GraphElementAccessor pickSupport = vv.getPickSupport();
-			System.out.println("GraphElementAccessor!");
-			if (pickSupport != null) {
-
-				final Vertex pickV = pickSupport.getVertex(ivp.getX(), ivp.getY());
-
-				if (pickV != null) {
-					System.out.println("pickVisnotNull");
-
-					System.out.println(pickV.toString());
-					popup.add(new AbstractAction("Show Node Information") {
-						/**
-						* 
-						*/
-
-						public void actionPerformed(ActionEvent e) {
-							System.out.println("person added");
-							Home home = new Home();
-							home.setVisible(true);
-
-//	                   
-						}
-					});
-					popup.show(vv, e.getX(), e.getY());// new abstraction
-
-				}
-			} /// if picksupport
-
-		}// handlePopup(MouseEvent e)
-	}// PopupGraphMousePlugin
+	
 }

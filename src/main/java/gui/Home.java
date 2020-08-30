@@ -32,6 +32,7 @@ public class Home extends JFrame implements ActionListener {
 	private JButton riskDisButton;
 	private JButton taskDisButton;
 	private JButton riskRelateButton;
+	private JButton autoInput;
 	private JFileChooser fc;
 	private String riskInfo;
 	private String taskInfo;
@@ -131,7 +132,7 @@ public class Home extends JFrame implements ActionListener {
 		exeButton.addActionListener(this);
 		input.add(exeButton);
 
-		JButton autoInput = new JButton("Auto Set");
+		autoInput = new JButton("Auto Set");
 		autoInput.addActionListener(this);
 		autoInput.setBounds(299, 199, 89, 23);
 		input.add(autoInput);
@@ -168,8 +169,11 @@ public class Home extends JFrame implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-
-		if (e.getSource() != exeButton) {
+		if(e.getSource() == autoInput) {
+			taskInfo = Configuaration.inputPath+"0.csv" ;
+			taskDis = Configuaration.inputPath+"task_distribution.csv" ;
+		}
+		if (e.getSource() != exeButton &&e.getSource() != autoInput ) {
 			fc = new JFileChooser(Configuaration.inputPath);
 			int returnVal = fc.showOpenDialog(Home.this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -204,10 +208,12 @@ public class Home extends JFrame implements ActionListener {
 					addLog("Dimension Info:\n" + "Importing file ...." + DInfo + "\n");
 
 				}
+				
 
 			}
 
 		} else {
+			
 			/* execute the program */
 			log.append("Caculating probability ....\n");
 			log.setCaretPosition(log.getDocument().getLength());
