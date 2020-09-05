@@ -1,17 +1,20 @@
 package gui;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import model.dimension.Dimension;
+import model.risk.Risk;
 import model.task.Task;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class TaskInfomation extends JFrame {
 
@@ -45,6 +48,7 @@ public class TaskInfomation extends JFrame {
 	 * Create the frame.
 	 */
 	public TaskInfomation(Task task) {
+		setTitle("Task Information");
 		this.task = task;
 		String nameData = task.getName();
 		String expectTimeData = String.valueOf(task.getExpectedTime());
@@ -53,8 +57,11 @@ public class TaskInfomation extends JFrame {
 		String lsData = String.valueOf(task.getLs());
 		String lfData = String.valueOf(task.getLf());
 		String slackData = String.valueOf(task.getSlack());
-		String probData = String.valueOf(task.getProb());
-		
+		String probData = String.valueOf((double) Math.round(task.getProb()*1000)/1000);
+		List<Double> dimensionProbList = task.getDimensionProbList();
+		List<Dimension> dimensionList = task.getDimensionList();
+		List<Risk> risks = task.getRisks();
+		System.out.println("alo");
 		String predecessorData = "";
 		if(task.getPredecessor()!=null) {
 			for(Task t:task.getPredecessor()) {
@@ -64,7 +71,7 @@ public class TaskInfomation extends JFrame {
 		}
 		
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 505, 329);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -72,7 +79,7 @@ public class TaskInfomation extends JFrame {
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Information", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(0, 0, 434, 261);
+		panel.setBounds(0, 0, 489, 290);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
@@ -157,13 +164,44 @@ public class TaskInfomation extends JFrame {
 		prob.setBounds(304, 48, 75, 14);
 		panel.add(prob);
 		
-		JLabel DiemsionLabel = new JLabel("Dimension : ");
-		DiemsionLabel.setBounds(218, 80, 67, 14);
-		panel.add(DiemsionLabel);
 		
-		JButton dimension = new JButton("View Dimension");
-		dimension.setBounds(290, 76, 113, 23);
-		panel.add(dimension);
+		
+		int i=0;
+		if(dimensionList!=null) {
+			JLabel DiemsionLabel = new JLabel("Prob in Dimension : ");
+			DiemsionLabel.setBounds(218, 80, 150, 14);
+			panel.add(DiemsionLabel);
+			for(Dimension d: dimensionList) {
+				JButton dimension = new JButton(d.getDimensionId());
+				dimension.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						TaskNet taskNet = new TaskNet(d.getTasks());
+						taskNet.run();
+					}
+				});
+				dimension.setBounds(218, 109+i*26, 113, 23);
+				panel.add(dimension);
+				JLabel dimensionProb = new JLabel(String.valueOf(dimensionProbList.get(i)));
+				dimensionProb.setBounds(341, 113+i*26, 100, 14);
+				panel.add(dimensionProb);
+				i++;
+			}
+		}
+		if(risks!=null) {
+			JLabel DiemsionLabel = new JLabel("Risk Model : ");
+			DiemsionLabel.setBounds(218, 80, 150, 14);
+			panel.add(DiemsionLabel);
+			JButton dimension = new JButton("View Risk Model");
+			dimension.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					// view risk net
+					RiskNet riskNet = new RiskNet(risks);
+					riskNet.run();
+				}
+			});
+			dimension.setBounds(218, 109, 113, 23);
+			panel.add(dimension);
+		}
 		
 		JButton close = new JButton("Close");
 		close.addActionListener(new ActionListener() {
@@ -171,7 +209,9 @@ public class TaskInfomation extends JFrame {
 				setVisible(false);
 			}
 		});
-		close.setBounds(335, 216, 89, 23);
+		close.setBounds(390, 256, 89, 23);
 		panel.add(close);
+		
+		
 	}
 }

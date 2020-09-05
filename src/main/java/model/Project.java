@@ -68,6 +68,9 @@ public class Project {
 		taskProbMap = new HashMap<Task, List<Double>>();
 		for (Task t : tasks) {
 			taskProbMap.put(t, Dimension.getTaskProbFromDimensionList(dimensionList, t.getName()));
+			t.setDimensionList(dimensionList);
+			t.setDimensionProbList(Dimension.getTaskProbFromDimensionList(dimensionList, t.getName()));
+			
 			TaskNet taskNet = new TaskNet("Task " + t.getName(), t,Dimension.getTaskProbFromDimensionList(dimensionList, t.getName()));
 			taskNet.calcProb();
 		}

@@ -44,6 +44,7 @@ public class TaskNet extends BayesianNet {
 			public void run() {
 				try {
 					TaskNet frame = new TaskNet(tasks);
+					frame.setTitle("Task Net");
 					frame.drawGraph();
 					frame.setContent();
 					frame.setVisible(true);
@@ -66,7 +67,7 @@ public class TaskNet extends BayesianNet {
 	@Override
 	
 	public void setMousePlugin() {
-		PopupGraphMousePlugin plugin = new PopupGraphMousePlugin(taskVertexMap);
+		PopupGraphMousePlugin plugin = new PopupGraphMousePlugin(taskVertexMap,null);
 		plugin.setShowId(PopupGraphMousePlugin.SHOW_TASK_INFO);
 		graphMouse.add(plugin);
 	}

@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
@@ -14,17 +13,20 @@ import edu.uci.ics.jung.graph.Vertex;
 import edu.uci.ics.jung.visualization.GraphElementAccessor;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.AbstractPopupGraphMousePlugin;
+import model.risk.Risk;
 import model.task.Task;
 
 public class PopupGraphMousePlugin extends AbstractPopupGraphMousePlugin implements MouseListener {
 	Map<Vertex,Task> taskVertexMap;
+	Map<Vertex,Risk> riskVertexMap;
 	private int showId ;
 	public static final int SHOW_TASK_INFO = 1;
-	public static final int SHOW_DIMENSION_INFO = 2;
+	public static final int SHOW_RISK_INFO = 2;
 	
-	public PopupGraphMousePlugin(Map<Vertex,Task> taskVertexMap) {
+	public PopupGraphMousePlugin(Map<Vertex,Task> taskVertexMap,Map<Vertex,Risk> riskVertexMap) {
 		this(MouseEvent.BUTTON3_MASK);
 		this.taskVertexMap = taskVertexMap;
+		this.riskVertexMap = riskVertexMap;
 	}
 	public void setShowId(int id) {
 		this.showId = id;
@@ -36,10 +38,14 @@ public class PopupGraphMousePlugin extends AbstractPopupGraphMousePlugin impleme
 	public PopupGraphMousePlugin(int modifiers) {
 		super(modifiers);
 	}
-	public void showTaskInformation(Vertex pickV) {
+	public void showInformation(Vertex pickV) {
 		if(showId == SHOW_TASK_INFO) {
 			TaskInfomation taskInfo = new TaskInfomation(taskVertexMap.get(pickV));
 			taskInfo.run();
+		}
+		if(showId == SHOW_RISK_INFO) {
+			RiskInformation riskInfo = new RiskInformation(riskVertexMap.get(pickV));
+			riskInfo.run();
 		}
 		
 	}
@@ -73,7 +79,7 @@ public class PopupGraphMousePlugin extends AbstractPopupGraphMousePlugin impleme
 						System.out.println("person added");
 //						Home home = new Home();
 //						home.setVisible(true);
-						showTaskInformation(pickV);
+						showInformation(pickV);
 
 //                   
 					}

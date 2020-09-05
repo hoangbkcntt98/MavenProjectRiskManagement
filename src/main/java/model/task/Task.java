@@ -3,6 +3,8 @@ package model.task;
 import java.util.List;
 
 import algorithms.pert.Pert;
+import model.dimension.Dimension;
+import model.risk.Risk;
 
 public class Task {
 	int id;
@@ -22,6 +24,9 @@ public class Task {
 	List<Task> predecessor;
 	List<Task> successor;
 	List<Double> probList;
+	List<Dimension> dimensionList;
+	List<Double> dimensionProbList;
+	List<Risk> risks;
 	public Task(int id, String name,double optimistic, double mostlikely,
 			double pessimistic) {
 		super();
@@ -144,6 +149,30 @@ public class Task {
 
 	public void setProbList(List<Double> probList) {
 		this.probList = probList;
+	}
+
+	public List<Dimension> getDimensionList() {
+		return dimensionList;
+	}
+
+	public void setDimensionList(List<Dimension> dimensionList) {
+		this.dimensionList = dimensionList;
+	}
+
+	public List<Double> getDimensionProbList() {
+		return dimensionProbList;
+	}
+
+	public void setDimensionProbList(List<Double> dimensionProbList) {
+		this.dimensionProbList = dimensionProbList;
+	}
+
+	public List<Risk> getRisks() {
+		return risks;
+	}
+
+	public void setRisks(List<Risk> risks) {
+		this.risks = risks;
 	}
 	
 	

@@ -23,6 +23,7 @@ import utils.Utils;
 public class Dimension extends Project{
 	public String dimensionId;
 	public Map<String,Double> taskDeadlineMap;
+	public List<Risk> allRisks;
 	public Dimension(String path,double deadline,String dimensionId) {
 //		super(path,deadline);
 		this.taskRelatePath = path;
@@ -53,12 +54,16 @@ public class Dimension extends Project{
 //				System.out.println("taskProb no risk "+taskProb);
 				t.setProb(taskProb);
 			}
+			if(allRisks!=null) {
+				t.setRisks(allRisks);
+			}
 		}
 	}
 	public double getRiskProb(String relatePath,String disPath) {
 		RiskServiceInterface riskServices = new RiskServiceImpl();
 		// get informations of risk from data input
-		List<Risk> allRisks = riskServices.readRiskRelationInfo(relatePath);
+
+		allRisks = riskServices.readRiskRelationInfo(relatePath);
 		riskServices.readRiskDistribution(disPath, allRisks);
 		// init bayesian network for all risks
 		RiskNet riskModel = new RiskNet("Riskmanagement of project",allRisks);
