@@ -57,6 +57,7 @@ public class PopupGraphMousePlugin extends AbstractPopupGraphMousePlugin impleme
 	 */
 	@SuppressWarnings("unchecked")
 	protected void handlePopup(MouseEvent e) {
+		System.out.println(e.getSource());
 		final VisualizationViewer vv = (VisualizationViewer) e.getSource();
 		final Point2D p = e.getPoint();
 		final Point2D ivp = p;
@@ -86,6 +87,8 @@ public class PopupGraphMousePlugin extends AbstractPopupGraphMousePlugin impleme
 				});
 				popup.show(vv, e.getX(), e.getY());// new abstraction
 
+			}else {
+				System.out.println("null ver");
 			}
 		} /// if picksupport
 		else {

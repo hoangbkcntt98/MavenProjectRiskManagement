@@ -1,4 +1,6 @@
 package utils;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,6 +65,12 @@ public class Utils {
 			}
 			
 		}
+	}
+	public static String round(double num) {
+		DecimalFormat df = new DecimalFormat("#.##");
+		double newNum = (double) Math.round(num*10000)/10000;
+		df.setRoundingMode(RoundingMode.CEILING);
+		return df.format(newNum);	
 	}
 	public static void setValueCol(int [][] mat,int col,int value) {
 		for(int i=0;i<mat[1].length;i++) {

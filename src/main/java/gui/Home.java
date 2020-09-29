@@ -206,10 +206,7 @@ public class Home extends JFrame implements ActionListener {
 				if (e.getSource() == DInfoButton) {
 					DInfo = file.getPath();
 					addLog("Dimension Info:\n" + "Importing file ...." + DInfo + "\n");
-
 				}
-				
-
 			}
 
 		} else {
@@ -219,13 +216,18 @@ public class Home extends JFrame implements ActionListener {
 			log.setCaretPosition(log.getDocument().getLength());
 			try {
 				// caculate prob of each task in project 
-				Project project = new Project(taskInfo,taskDis,40);
+				Project project = new Project(taskInfo,taskDis,30);
 				project.update();
 				project.calcProb();
 				addLog("Task Network Visualization");
-				TaskNet taskNet = new TaskNet(project.getTasks());
+//				TaskInfomation t = new TaskInfomation(project.getTasks().get(0));
+//				t.run();
+				MainResult rs = new MainResult(project);
+				rs.run();
 				
-				taskNet.run();
+//				TaskNet taskNet = new TaskNet(project.getTasks());
+//				
+//				taskNet.run();
 				addLog("Bayesian Network Visualization ....");
 				this.setVisible(false);
 			} catch (Exception e2) {

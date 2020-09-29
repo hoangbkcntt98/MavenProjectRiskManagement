@@ -18,7 +18,7 @@ public class EditingModal extends EditingModalGraphMouse {
 			modeBox = new JComboBox(new Mode[] { Mode.TRANSFORMING, Mode.PICKING });
 			modeBox.addItemListener(getModeListener());
 		}
-		modeBox.setSelectedItem(mode);
+		modeBox.setSelectedItem(Mode.PICKING);
 		return modeBox;
 	}
 

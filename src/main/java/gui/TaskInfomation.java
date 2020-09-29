@@ -51,7 +51,7 @@ public class TaskInfomation extends JFrame {
 		setTitle("Task Information");
 		this.task = task;
 		String nameData = task.getName();
-		String expectTimeData = String.valueOf(task.getExpectedTime());
+		String expectTimeData = String.valueOf((double) Math.round(task.getExpectedTime()*1000)/1000);
 		String esData =  String.valueOf(task.getEs());
 		String efData =  String.valueOf(task.getEf());;
 		String lsData = String.valueOf(task.getLs());
@@ -181,7 +181,7 @@ public class TaskInfomation extends JFrame {
 				});
 				dimension.setBounds(218, 109+i*26, 113, 23);
 				panel.add(dimension);
-				JLabel dimensionProb = new JLabel(String.valueOf(dimensionProbList.get(i)));
+				JLabel dimensionProb = new JLabel(String.valueOf((double) Math.round(dimensionProbList.get(i)*1000)/1000));
 				dimensionProb.setBounds(341, 113+i*26, 100, 14);
 				panel.add(dimensionProb);
 				i++;
