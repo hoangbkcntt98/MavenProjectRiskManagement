@@ -26,12 +26,15 @@ public class Dimension extends Project{
 	public List<Risk> allRisks;
 	public Dimension(String path,double deadline,String dimensionId) {
 //		super(path,deadline);
+		this.setDeadline(deadline);
 		this.taskRelatePath = path;
 		this.dimensionId = dimensionId;
 	}
 	public void calcProb() {
 		update();
 		// calc prob
+		// delete this prob
+		double probTemp=1;
 		List<Task> tasks = getTasks();
 		List<RiskInfo> riskInfoList = readRiskInfo(Configuaration.inputPath+"risk_info.csv");
 		int checkRisk;
@@ -57,7 +60,11 @@ public class Dimension extends Project{
 			if(allRisks!=null) {
 				t.setRisks(allRisks);
 			}
+			if(getCriticalPath().contains(t)) {
+				probTemp = probTemp*t.getProb();
+			}
 		}
+		setProb(probTemp);
 	}
 	public double getRiskProb(String relatePath,String disPath) {
 		RiskServiceInterface riskServices = new RiskServiceImpl();

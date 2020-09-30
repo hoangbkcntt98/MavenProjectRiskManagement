@@ -110,5 +110,11 @@ public class Project {
 	public void setProb(double prob) {
 		this.prob = prob;
 	}
-
+	public double getDeadline() {
+		return deadline;
+	}
+	public void setDeadline(double deadline) {
+		this.deadline = deadline;
+	}
+	
 }
