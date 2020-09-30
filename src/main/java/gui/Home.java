@@ -216,7 +216,7 @@ public class Home extends JFrame implements ActionListener {
 			log.setCaretPosition(log.getDocument().getLength());
 			try {
 				// caculate prob of each task in project 
-				Project project = new Project(taskInfo,taskDis,30);
+				Project project = new Project(taskInfo,taskDis,40);
 				project.update();
 				project.calcProb();
 				addLog("Task Network Visualization");

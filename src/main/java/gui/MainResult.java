@@ -72,7 +72,7 @@ public class MainResult extends JFrame {
 		panel = new StatusBar(height,project);
 		contentPane.add(panel);
 		
-		taskNet = new TaskNetPanel(pj.getTasks());
+		taskNet = new TaskNetPanel(pj);
 		taskNet.setBounds(276, 0, (int) width - panel.getWidth(),panel.getHeight()-100);
 		contentPane.add(taskNet);
 		JPanel controls = new JPanel();
@@ -94,7 +94,7 @@ public class MainResult extends JFrame {
 					contentPane.repaint();
 					contentPane.revalidate();
 					// update graph
-					taskNet = new TaskNetPanel(d.getTasks());
+					taskNet = new TaskNetPanel(d);
 					taskNet.setBounds(276, 0, (int) width - panel.getWidth(),panel.getHeight()-100);
 					contentPane.add(taskNet);	
 					contentPane.repaint();

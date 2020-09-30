@@ -34,7 +34,10 @@ public class Project {
 	public void update() {
 		TaskServiceInterface taskServices = new TaskServiceImpl();
 		this.tasks = taskServices.readTaskListInfo(taskRelatePath);
-		taskServices.readTaskDistribution(taskDisPath, tasks);
+		if(taskDisPath!=null) {
+			taskServices.readTaskDistribution(taskDisPath, tasks);
+		}
+		
 		criticalPath = Pert.excute(tasks);
 		double projectVariance = 0;
 		double expectedTime = 0;

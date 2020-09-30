@@ -63,6 +63,7 @@ public class BayesianNet extends JFrame {
 
 	private JPanel contentPane;
 	Graph graph;
+	Vertex[] v;
 	AbstractLayout layout;
 	PluggableRenderer pr;
 	VisualizationViewer vv;
@@ -88,7 +89,7 @@ public class BayesianNet extends JFrame {
 	}
 	public void generateGraph() {
 		graph = new SparseGraph();
-		Vertex[] v = createVertices();
+		 v = createVertices();
 		createEdges(v);
 	}
 	public void setContent() {
@@ -98,6 +99,9 @@ public class BayesianNet extends JFrame {
 		pr = new PluggableRenderer();
 		this.layout = new FRLayout(graph);
 		vertexLocations = new DefaultSettableVertexLocationFunction();
+		System.out.println(v[0]);
+		vertexLocations.setLocation(v[0], new Point2D.Double(1,1));
+		System.out.println(vertexLocations.getLocation(v[0]));
 		layout.initialize(new Dimension(600, 600));
 		vv = new VisualizationViewer(layout, pr);
 		vv.setBackground(Color.white);
