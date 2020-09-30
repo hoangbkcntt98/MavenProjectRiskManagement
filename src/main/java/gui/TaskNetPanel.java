@@ -4,12 +4,15 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Paint;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import edu.uci.ics.jung.graph.ArchetypeVertex;
+import edu.uci.ics.jung.graph.Edge;
 import edu.uci.ics.jung.graph.Vertex;
+import edu.uci.ics.jung.graph.decorators.AbstractEdgePaintFunction;
 import edu.uci.ics.jung.graph.decorators.VertexPaintFunction;
 import edu.uci.ics.jung.graph.decorators.VertexStringer;
 import edu.uci.ics.jung.graph.impl.DirectedSparseEdge;
@@ -73,7 +76,7 @@ public class TaskNetPanel extends NetPanel {
 	 * 
 	 * @return vertices
 	 */
-	
+
 	public Vertex[] createVertices() {
 		Vertex[] v = new Vertex[tasks.size()];
 		vertexTaskMap = new HashMap<Task, Vertex>();
@@ -87,6 +90,7 @@ public class TaskNetPanel extends NetPanel {
 		}
 		return v;
 	}
+
 	@Override
 	public void setLocationVertex() {
 		// TODO Auto-generated method stub
@@ -98,6 +102,7 @@ public class TaskNetPanel extends NetPanel {
 //		
 //		vertexLocations.setLocation(vertex[0], new Point2D.Double(0,0));
 	}
+
 	@Override
 	/**
 	 * create edges for this demo graph
@@ -123,6 +128,33 @@ public class TaskNetPanel extends NetPanel {
 		super.setVertexPaintFunction();
 		pr.setVertexPaintFunction(new MyVertexPaintFunction(pj));
 	}
+	@Override
+	public void setEdgePaintFunction() {
+		// TODO Auto-generated method stub
+		super.setEdgePaintFunction();
+		pr.setEdgePaintFunction(new MyEdgePaintFunction());
+	}
+	 
+	    
+	public class MyEdgePaintFunction extends AbstractEdgePaintFunction {
+
+		/**
+		 * @see edu.uci.ics.jung.graph.decorators.EdgePaintFunction#getDrawPaint(edu.uci.ics.jung.graph.Edge)
+		 */
+		private List<Vertex> completed;
+		boolean isBlessed( Edge e ) {
+			Vertex v1= (Vertex) e.getEndpoints().getFirst()	;
+			Vertex v2= (Vertex) e.getEndpoints().getSecond() ;
+			completed.add(v1);
+			return pj.getCriticalPath().contains(getTaskByVertex(v1)) && pj.getCriticalPath().contains( getTaskByVertex(v2) );
+	    }
+		public Paint getDrawPaint(Edge e) {
+			if(isBlessed(e)) {
+				return Color.red;
+			}
+			return Color.black;
+		}
+	}
 
 	/**
 	 * @author danyelf
@@ -141,8 +173,10 @@ public class TaskNetPanel extends NetPanel {
 
 		public Paint getFillPaint(Vertex v) {
 			if (pj.getCriticalPath().contains(taskVertexMap.get(v))) {
-				if(v.getOutEdges().size()==0) return Color.red;
-				if(v.getInEdges().size()==0) return Color.green;
+				if (v.getOutEdges().size() == 0)
+					return Color.red;
+				if (v.getInEdges().size() == 0)
+					return Color.green;
 				return Color.white;
 			}
 
