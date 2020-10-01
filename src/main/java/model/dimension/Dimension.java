@@ -19,6 +19,7 @@ import model.task.Task;
 import service.risk.RiskServiceImpl;
 import service.risk.RiskServiceInterface;
 import utils.Utils;
+import com.bayesserver.Distribution;
 
 public class Dimension extends Project {
 	public String dimensionId;

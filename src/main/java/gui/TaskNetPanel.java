@@ -132,7 +132,7 @@ public class TaskNetPanel extends NetPanel {
 	public void setEdgePaintFunction() {
 		// TODO Auto-generated method stub
 		super.setEdgePaintFunction();
-		pr.setEdgePaintFunction(new MyEdgePaintFunction());
+//		pr.setEdgePaintFunction(new MyEdgePaintFunction());
 	}
 	 
 	    
