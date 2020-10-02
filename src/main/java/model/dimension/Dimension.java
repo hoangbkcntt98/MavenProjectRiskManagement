@@ -11,6 +11,7 @@ import com.opencsv.CSVReaderBuilder;
 
 import algorithms.bayesian_network.DimensionNet;
 import algorithms.bayesian_network.RiskNet;
+import algorithms.pert.Pert;
 import config.Configuaration;
 import model.Project;
 import model.risk.Risk;
@@ -25,9 +26,11 @@ public class Dimension extends Project {
 	public String dimensionId;
 	public Map<String, Double> taskDeadlineMap;
 	public List<Risk> allRisks;
+	private String name;
 
-	public Dimension(String path, double deadline, String dimensionId) {
+	public Dimension(String name,String path, double deadline, String dimensionId) {
 //		super(path,deadline);
+		this.name = name;
 		this.setDeadline(deadline);
 		this.taskRelatePath = path;
 		this.dimensionId = dimensionId;
@@ -132,5 +135,14 @@ public class Dimension extends Project {
 	public void setDimensionId(String dimensionId) {
 		this.dimensionId = dimensionId;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 
 }

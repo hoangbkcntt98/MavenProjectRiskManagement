@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import algorithms.pert.Pert;
 import cern.jet.random.engine.DRand;
 import cern.jet.random.engine.RandomEngine;
 import edu.uci.ics.jung.graph.ArchetypeVertex;
@@ -61,6 +62,7 @@ public class TaskNetPanel extends NetPanel {
 		super();
 		this.pj = pj;
 		this.tasks = pj.getTasks();
+		System.out.println(pj.getTaskRelatePath());
 //		setTitle("Task Net");
 		drawGraph();
 		
@@ -170,7 +172,9 @@ public class TaskNetPanel extends NetPanel {
 		Vertex v2 = (Vertex) e.getEndpoints().getSecond();
 		Task start = getTaskByVertex(v1);
 		Task end = getTaskByVertex(v2);
-		Task[] path = pj.getCriticalPath().toArray(new Task[0]);
+		
+		List<Task> critPath = Pert.excute(pj.getTasks());
+		Task[] path = critPath.toArray(new Task[0]);
 		for (int i = 0; i < path.length - 1; i++) {
 			if (path[i] == start && path[i + 1] == end)
 				return true;

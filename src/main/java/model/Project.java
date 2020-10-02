@@ -22,6 +22,7 @@ public class Project {
 	public double prob;
 	public double deadline;
 	Map<Task, List<Double>> taskProbMap;
+	public static final String [] dName = {"Size","Productivity","Worker-hour","Duration","Cost"};
 	public Project() {
 		
 	}
@@ -63,7 +64,7 @@ public class Project {
 		// update prob for all tasks in each dimension
 		for (int i = 0; i < 5; i++) {
 			String dimensionId = String.valueOf(i);
-			Dimension dimension = new Dimension(Configuaration.inputPath + "0_" + dimensionId + ".csv", deadline,dimensionId);
+			Dimension dimension = new Dimension(dName[i],Configuaration.inputPath + "0_" + dimensionId + ".csv", deadline,dimensionId);
 			dimension.setTaskDeadlineMap(deadlineMap);
 			dimension.calcProb();
 			dimensionList.add(dimension);
@@ -119,5 +120,12 @@ public class Project {
 	public void setDeadline(double deadline) {
 		this.deadline = deadline;
 	}
+	public String getTaskRelatePath() {
+		return taskRelatePath;
+	}
+	public void setTaskRelatePath(String taskRelatePath) {
+		this.taskRelatePath = taskRelatePath;
+	}
+	
 	
 }

@@ -17,6 +17,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import algorithms.pert.Pert;
 import model.Project;
 import model.dimension.Dimension;
 import model.task.Task;
@@ -87,7 +88,8 @@ public class MainResult extends JFrame {
 		dimensionButtonList = new JButton[dimensionList.size()];
 		int count = 0;
 		for (Dimension d : dimensionList) {
-			dimensionButtonList[count] = new JButton("Dimension " + count);
+			Pert.showCriticalPath(d.getCriticalPath());
+			dimensionButtonList[count] = new JButton(d.getName());
 			dimensionButtonList[count].setBounds((count + 1) * 100, 100, 100, 23);
 			dimensionButtonList[count].setFont(new Font("Arial", Font.PLAIN, 10));
 			dimensionButtonList[count].setMargin(new Insets(0, 0, 0, 0));
@@ -137,11 +139,12 @@ public class MainResult extends JFrame {
 				project.calcProb();
 				dimensionList = project.getTasks().get(0).getDimensionList();
 				for (int count = 0; count < dimensionButtonList.length; count++) {
+					
 					Dimension d = dimensionList.get(count);
 					controls.remove(dimensionButtonList[count]);
 					controls.repaint();
 					controls.revalidate();
-					dimensionButtonList[count] = new JButton("Dimension " + count);
+					dimensionButtonList[count] = new JButton(d.getName());
 					dimensionButtonList[count].setBounds((count + 1) * 100, 100, 100, 23);
 					dimensionButtonList[count].setFont(new Font("Arial", Font.PLAIN, 10));
 					dimensionButtonList[count].setMargin(new Insets(0, 0, 0, 0));
