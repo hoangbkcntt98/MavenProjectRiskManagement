@@ -159,6 +159,8 @@ public class MainResult extends JFrame {
 		});
 		controls.add(deadlineButton);
 		
+		
+		
 	}
 
 	public void updateGUI(Project d) {

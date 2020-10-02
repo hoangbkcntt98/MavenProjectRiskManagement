@@ -63,6 +63,7 @@ public class PopupGraphMousePlugin extends AbstractPopupGraphMousePlugin impleme
 		final VisualizationViewer vv = (VisualizationViewer) e.getSource();
 		final Point2D p =vv.inverseViewTransform(e.getPoint());
 		final Point2D ivp = p;
+		System.out.println(p);
 		JPopupMenu popup = new JPopupMenu();
 
 		System.out.println("mouse event!");

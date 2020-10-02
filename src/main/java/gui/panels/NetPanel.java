@@ -17,6 +17,10 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.Printable;
 import java.io.File;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -31,6 +35,8 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
 
+import cern.jet.random.engine.DRand;
+import cern.jet.random.engine.RandomEngine;
 import edu.uci.ics.jung.graph.ArchetypeVertex;
 import edu.uci.ics.jung.graph.Edge;
 import edu.uci.ics.jung.graph.Graph;
@@ -53,7 +59,10 @@ import edu.uci.ics.jung.visualization.FRLayout;
 import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
 import edu.uci.ics.jung.visualization.PickSupport;
 import edu.uci.ics.jung.visualization.PluggableRenderer;
+import edu.uci.ics.jung.visualization.SettableVertexLocationFunction;
 import edu.uci.ics.jung.visualization.ShapePickSupport;
+import edu.uci.ics.jung.visualization.StaticLayout;
+import edu.uci.ics.jung.visualization.VertexLocationFunction;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.contrib.KKLayout;
 import edu.uci.ics.jung.visualization.control.AbstractPopupGraphMousePlugin;
@@ -63,16 +72,17 @@ import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ScalingControl;
 import gui.jung.config.EditingModal;
 import gui.jung.config.PopupGraphMousePlugin;
+import samples.preview_new_graphdraw.VisVertex;
 
 import javax.swing.border.BevelBorder;
 
-public class NetPanel extends JPanel {
+public abstract class NetPanel extends JPanel {
 	Graph graph;
 	AbstractLayout layout;
 	PluggableRenderer pr;
 	VisualizationViewer vv;
-	Vertex [] v;
-	DefaultSettableVertexLocationFunction vertexLocations;
+	Vertex[] v;
+	SettableVertexLocationFunction vertexLocations;
 	EditingModalGraphMouse graphMouse;
 	String instructions = "<html>" +
 
@@ -86,29 +96,30 @@ public class NetPanel extends JPanel {
 			+ "<h3>Transforming Mode:</h3>" + "<ul>" + "<li>Mouse1+drag pans the graph"
 			+ "<li>Mouse1+Shift+drag rotates the graph" + "<li>Mouse1+CTRL(or Command)+drag shears the graph" + "</ul>"
 			+ "</html>";
+
 	public void drawGraph() {
 		generateGraph();
 		generateVisualizationView();
 		drawToolsBar();
 
 	}
+
 	public void generateGraph() {
 		graph = new SparseGraph();
 		v = createVertices();
 		createEdges(v);
 	}
+
 	public void generateVisualizationView() {
 		pr = new PluggableRenderer();
-		this.layout = new FRLayout(graph);
 		
-		vertexLocations = new DefaultSettableVertexLocationFunction();
-		setLocationVertex();
+		this.layout = new StaticLayout(graph);
 		
-		layout.initialize(new Dimension(700, 600));
+		setLayout();
 		vv = new VisualizationViewer(layout, pr);
 		vv.setBackground(Color.white);
 		vv.setPickSupport(new ShapePickSupport());
-		
+
 		pr.setEdgeShapeFunction(new EdgeShape.Line());
 		pr.setVertexLabelCentering(true);
 		setVertexPaintFunction();
@@ -118,18 +129,22 @@ public class NetPanel extends JPanel {
 //		vv.setToolTipFunction(new DefaultToolTipFunction());
 		final GraphZoomScrollPane panel = new GraphZoomScrollPane(vv);
 		add(panel);
-		
+
 	}
+	public abstract void setLayout();
+
 	public void setLocationVertex() {
-		
+
 	}
+
 	public void setVertexPaintFunction() {
-		
+
 	}
+
 	public void setEdgePaintFunction() {
-		
+
 	}
-	
+
 //	public void generateVertexShape(PluggableRenderer pr) {
 //		// change size of vertex
 //		pr.setVertexShapeFunction(new AbstractVertexShapeFunction(new ConstantVertexSizeFunction(40),
@@ -140,15 +155,14 @@ public class NetPanel extends JPanel {
 //			}
 //		});
 //	}
-	
 
 	public void drawToolsBar() {
-		
+
 		graphMouse = new EditingModal();
-		
+
 		graphMouse.setVertexLocations(vertexLocations);
 		vv.setGraphMouse(graphMouse);
-		
+
 		setMousePlugin();
 		graphMouse.setMode(ModalGraphMouse.Mode.TRANSFORMING);
 		final ScalingControl scaler = new CrossoverScalingControl();
@@ -188,9 +202,11 @@ public class NetPanel extends JPanel {
 		controls.add(back);
 		add(controls, BorderLayout.SOUTH);
 	}
+
 	public void setMousePlugin() {
-		
+
 	}
+
 	public void createMainMenu() {
 		JMenu menu = new JMenu("File");
 		menu.add(new AbstractAction("Make Image") {
@@ -208,7 +224,7 @@ public class NetPanel extends JPanel {
 		menuBar.add(menu);
 		add(menuBar);
 	}
-	
+
 	public void setVertexLable() {
 		pr.setVertexStringer(new VertexStringer() {
 			public String getLabel(ArchetypeVertex v) {
@@ -216,6 +232,7 @@ public class NetPanel extends JPanel {
 			}
 		});
 	}
+
 	/**
 	 * create some vertices
 	 * 
@@ -281,11 +298,42 @@ public class NetPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public NetPanel() {
-		
+
 		setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		setLayout(new BorderLayout(0, 0));
-		
 
+	}
+
+	public class RandomVertexLocationDecorator implements VertexLocationFunction {
+		RandomEngine rand;
+		Map v_locations = new HashMap();
+		Dimension dim;
+
+		public RandomVertexLocationDecorator(Dimension d) {
+			this.rand = new DRand((int) (new Date().getTime()));
+			this.dim = d;
+		}
+
+		public void reset() {
+			v_locations.clear();
+		}
+
+		public Point2D getLocation(ArchetypeVertex v) {
+			Point2D location = (Point2D) v_locations.get(v);
+			if (location == null) {
+				Vertex v1 = (Vertex) v;
+				location = new Point2D.Double(0, 0);
+				if (v1.getOutEdges().size() == 0 || v1.getInEdges().size() == 0) {
+					location = new Point2D.Double(0, 0);
+				}
+				v_locations.put(v, location);
+			}
+			return location;
+		}
+
+		public Iterator getVertexIterator() {
+			return v_locations.keySet().iterator();
+		}
 	}
 
 }
