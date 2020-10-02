@@ -1,4 +1,4 @@
-package gui;
+package gui.references;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -15,6 +15,7 @@ import edu.uci.ics.jung.graph.Vertex;
 import edu.uci.ics.jung.graph.decorators.VertexStringer;
 import edu.uci.ics.jung.graph.impl.DirectedSparseEdge;
 import edu.uci.ics.jung.graph.impl.SparseVertex;
+import gui.jung.config.PopupGraphMousePlugin;
 import model.risk.Risk;
 import model.task.Task;
 

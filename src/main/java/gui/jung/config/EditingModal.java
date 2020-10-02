@@ -1,4 +1,4 @@
-package gui;
+package gui.jung.config;
 
 import javax.swing.JComboBox;
 

@@ -1,4 +1,4 @@
-package gui;
+package gui.jung.config;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
@@ -13,6 +13,8 @@ import edu.uci.ics.jung.graph.Vertex;
 import edu.uci.ics.jung.visualization.GraphElementAccessor;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.AbstractPopupGraphMousePlugin;
+import gui.infomation.RiskInformation;
+import gui.infomation.TaskInfomation;
 import model.risk.Risk;
 import model.task.Task;
 
@@ -59,7 +61,7 @@ public class PopupGraphMousePlugin extends AbstractPopupGraphMousePlugin impleme
 	protected void handlePopup(MouseEvent e) {
 		System.out.println(e.getSource());
 		final VisualizationViewer vv = (VisualizationViewer) e.getSource();
-		final Point2D p = e.getPoint();
+		final Point2D p =vv.inverseViewTransform(e.getPoint());
 		final Point2D ivp = p;
 		JPopupMenu popup = new JPopupMenu();
 
@@ -78,11 +80,7 @@ public class PopupGraphMousePlugin extends AbstractPopupGraphMousePlugin impleme
 				popup.add(new AbstractAction("Show Node Information") {
 					public void actionPerformed(ActionEvent e) {
 						System.out.println("person added");
-//						Home home = new Home();
-//						home.setVisible(true);
 						showInformation(pickV);
-
-//                   
 					}
 				});
 				popup.show(vv, e.getX(), e.getY());// new abstraction

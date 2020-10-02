@@ -1,19 +1,21 @@
-package gui;
+package gui.references;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
-import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.Printable;
+import java.awt.print.PrinterJob;
 import java.io.File;
 
 import javax.imageio.ImageIO;
@@ -26,6 +28,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
 
 import edu.uci.ics.jung.graph.ArchetypeVertex;
@@ -36,7 +39,6 @@ import edu.uci.ics.jung.graph.decorators.ConstantVertexAspectRatioFunction;
 import edu.uci.ics.jung.graph.decorators.ConstantVertexSizeFunction;
 import edu.uci.ics.jung.graph.decorators.DefaultToolTipFunction;
 import edu.uci.ics.jung.graph.decorators.EdgeShape;
-import edu.uci.ics.jung.graph.decorators.VertexPaintFunction;
 import edu.uci.ics.jung.graph.decorators.VertexStringer;
 import edu.uci.ics.jung.graph.impl.DirectedSparseEdge;
 import edu.uci.ics.jung.graph.impl.SparseGraph;
@@ -45,23 +47,28 @@ import edu.uci.ics.jung.graph.impl.UndirectedSparseEdge;
 import edu.uci.ics.jung.visualization.AbstractLayout;
 import edu.uci.ics.jung.visualization.DefaultSettableVertexLocationFunction;
 import edu.uci.ics.jung.visualization.FRLayout;
+import edu.uci.ics.jung.visualization.GraphElementAccessor;
 import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
 import edu.uci.ics.jung.visualization.PluggableRenderer;
 import edu.uci.ics.jung.visualization.ShapePickSupport;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
-import edu.uci.ics.jung.visualization.contrib.KKLayout;
+import edu.uci.ics.jung.visualization.control.AbstractPopupGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.CrossoverScalingControl;
 import edu.uci.ics.jung.visualization.control.EditingModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ScalingControl;
-import javax.swing.border.BevelBorder;
+import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
+import gui.jung.config.EditingModal;
+import gui.jung.config.PopupGraphMousePlugin;
 
-public class NetPanel extends JPanel {
+public class BayesianNet extends JFrame {
+
+	private JPanel contentPane;
 	Graph graph;
+	Vertex[] v;
 	AbstractLayout layout;
 	PluggableRenderer pr;
 	VisualizationViewer vv;
-	;
 	DefaultSettableVertexLocationFunction vertexLocations;
 	EditingModalGraphMouse graphMouse;
 	String instructions = "<html>" +
@@ -84,16 +91,19 @@ public class NetPanel extends JPanel {
 	}
 	public void generateGraph() {
 		graph = new SparseGraph();
-		Vertex[] v = createVertices();
+		 v = createVertices();
 		createEdges(v);
+	}
+	public void setContent() {
+		setContentPane(contentPane);
 	}
 	public void generateVisualizationView() {
 		pr = new PluggableRenderer();
 		this.layout = new FRLayout(graph);
-		
 		vertexLocations = new DefaultSettableVertexLocationFunction();
-		setLocationVertex();
-		
+		System.out.println(v[0]);
+		vertexLocations.setLocation(v[0], new Point2D.Double(1,1));
+		System.out.println(vertexLocations.getLocation(v[0]));
 		layout.initialize(new Dimension(600, 600));
 		vv = new VisualizationViewer(layout, pr);
 		vv.setBackground(Color.white);
@@ -101,22 +111,11 @@ public class NetPanel extends JPanel {
 		
 		pr.setEdgeShapeFunction(new EdgeShape.Line());
 		pr.setVertexLabelCentering(true);
-		setVertexPaintFunction();
-		setEdgePaintFunction();
 		setVertexLable();
 		generateVertexShape(pr);
 		vv.setToolTipFunction(new DefaultToolTipFunction());
 		final GraphZoomScrollPane panel = new GraphZoomScrollPane(vv);
-		add(panel);
-		
-	}
-	public void setLocationVertex() {
-		
-	}
-	public void setVertexPaintFunction() {
-		
-	}
-	public void setEdgePaintFunction() {
+		contentPane.add(panel);
 		
 	}
 	
@@ -138,7 +137,6 @@ public class NetPanel extends JPanel {
 		
 		graphMouse.setVertexLocations(vertexLocations);
 		vv.setGraphMouse(graphMouse);
-		
 		setMousePlugin();
 		graphMouse.setMode(ModalGraphMouse.Mode.TRANSFORMING);
 		final ScalingControl scaler = new CrossoverScalingControl();
@@ -176,7 +174,7 @@ public class NetPanel extends JPanel {
 		controls.add(modeBox);
 		controls.add(help);
 		controls.add(back);
-		add(controls, BorderLayout.SOUTH);
+		contentPane.add(controls, BorderLayout.SOUTH);
 	}
 	public void setMousePlugin() {
 		graphMouse.add(new PopupGraphMousePlugin());
@@ -186,7 +184,7 @@ public class NetPanel extends JPanel {
 		menu.add(new AbstractAction("Make Image") {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
-				int option = chooser.showSaveDialog(NetPanel.this);
+				int option = chooser.showSaveDialog(BayesianNet.this);
 				if (option == JFileChooser.APPROVE_OPTION) {
 					File file = chooser.getSelectedFile();
 					writeJPEGImage(file);
@@ -196,7 +194,7 @@ public class NetPanel extends JPanel {
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(menu);
-		add(menuBar);
+		setJMenuBar(menuBar);
 	}
 	
 	public void setVertexLable() {
@@ -274,15 +272,44 @@ public class NetPanel extends JPanel {
 	}
 
 	/**
-	 * Create the panel.
+	 * Create the frame.
 	 */
-	public NetPanel() {
-		
-		setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		setLayout(new BorderLayout(0, 0));
-		
-
+	public BayesianNet() {
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(new BorderLayout(0, 0));
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		double width = screenSize.getWidth();
+		double height = screenSize.getHeight();
+		setSize((int) width - 200, (int) height - 200);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
+
+	/**
+	 * a driver for this demo
+	 */
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					BayesianNet frame = new BayesianNet();
+					frame.drawGraph();
+					frame.setContent();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
 	
 
+	
 }

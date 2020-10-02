@@ -1,4 +1,4 @@
-package gui;
+package gui.panels;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -14,6 +14,7 @@ import javax.swing.JProgressBar;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
+import gui.infomation.TaskInfomation;
 import model.Project;
 import model.task.Task;
 import utils.Utils;

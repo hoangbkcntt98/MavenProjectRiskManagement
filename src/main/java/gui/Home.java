@@ -20,6 +20,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import config.Configuaration;
+import gui.panels.MainResult;
 import model.Project;
 
 public class Home extends JFrame implements ActionListener {

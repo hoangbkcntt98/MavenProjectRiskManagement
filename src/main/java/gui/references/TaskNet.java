@@ -1,4 +1,4 @@
-package gui;
+package gui.references;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -26,7 +26,7 @@ import edu.uci.ics.jung.visualization.control.CrossoverScalingControl;
 import edu.uci.ics.jung.visualization.control.EditingModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ScalingControl;
-
+import gui.jung.config.PopupGraphMousePlugin;
 import model.task.Task;
 
 public class TaskNet extends BayesianNet {
