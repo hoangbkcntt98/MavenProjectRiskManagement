@@ -25,9 +25,12 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import config.Configuaration;
+import gui.common.MyButton;
+import gui.common.MyLabel;
 import gui.panels.FindTask;
 import gui.panels.MainResult;
 import model.Project;
+import model.input.InputModel;
 
 public class Home extends JFrame implements ActionListener {
 
@@ -53,6 +56,7 @@ public class Home extends JFrame implements ActionListener {
 	private JPanel logPanel;
 	private StringBuilder logStr;
 	private Project pj;
+	private InputModel inputModel;
 
 	/**
 	 * Launch the application.
@@ -84,6 +88,7 @@ public class Home extends JFrame implements ActionListener {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		inputModel = new InputModel();
 
 		// add menu bar
 		JMenuBar menubar = new JMenuBar();
@@ -194,27 +199,27 @@ public class Home extends JFrame implements ActionListener {
 		input.add(panel);
 		panel.setLayout(null);
 
-		JLabel taskDistribute = new JLabel("Task Distribution");
+		JLabel taskDistribute = new MyLabel("Task Distribution",10);
 		taskDistribute.setBounds(10, 21, 112, 27);
 		panel.add(taskDistribute);
 
-		taskDisButton = new JButton("Import");
-		taskDisButton.setBounds(111, 23, 89, 23);
+		taskDisButton = new MyButton("Import",10);
+		taskDisButton.setBounds(113, 26, 70, 17);
 		panel.add(taskDisButton);
-		JLabel lblNewLabel_1 = new JLabel("Task Info");
-		lblNewLabel_1.setBounds(10, 57, 112, 27);
+		JLabel lblNewLabel_1 = new MyLabel("Task Info",10);
+		lblNewLabel_1.setBounds(10, 54, 112, 27);
 		panel.add(lblNewLabel_1);
 
-		taskInfoButton = new JButton("Import");
-		taskInfoButton.setBounds(111, 59, 89, 23);
+		taskInfoButton = new MyButton("Import",10);
+		taskInfoButton.setBounds(113, 59, 70, 17);
 		panel.add(taskInfoButton);
 
-		JLabel lblNewLabel_1_1 = new JLabel("DimensionInfo");
-		lblNewLabel_1_1.setBounds(10, 100, 112, 27);
+		JLabel lblNewLabel_1_1 = new MyLabel("DimensionInfo",10);
+		lblNewLabel_1_1.setBounds(10, 87, 106, 27);
 		panel.add(lblNewLabel_1_1);
 
-		DInfoButton = new JButton("Import");
-		DInfoButton.setBounds(111, 102, 89, 23);
+		DInfoButton = new MyButton("Import",10);
+		DInfoButton.setBounds(113, 92, 70, 17);
 		panel.add(DInfoButton);
 
 		JPanel panel_1 = new JPanel();
@@ -223,28 +228,28 @@ public class Home extends JFrame implements ActionListener {
 		input.add(panel_1);
 		panel_1.setLayout(null);
 
-		riskInfoButton = new JButton("Import");
-		riskInfoButton.setBounds(138, 29, 89, 23);
+		riskInfoButton = new MyButton("Import",10);
+		riskInfoButton.setBounds(123, 32, 70, 17);
 		panel_1.add(riskInfoButton);
 
-		JLabel lblNewLabel_1_3 = new JLabel("Risk Relation");
-		lblNewLabel_1_3.setBounds(28, 59, 112, 27);
+		JLabel lblNewLabel_1_3 = new MyLabel("Risk Relation",10);
+		lblNewLabel_1_3.setBounds(28, 58, 112, 27);
 		panel_1.add(lblNewLabel_1_3);
 
-		riskRelateButton = new JButton("Import");
-		riskRelateButton.setBounds(138, 63, 89, 23);
+		riskRelateButton = new MyButton("Import",10);
+		riskRelateButton.setBounds(123, 63, 70, 17);
 		panel_1.add(riskRelateButton);
 
-		riskDisButton = new JButton("Import");
-		riskDisButton.setBounds(138, 97, 89, 23);
+		riskDisButton = new MyButton("Import",10);
+		riskDisButton.setBounds(123, 97, 70, 17);
 		panel_1.add(riskDisButton);
 
-		JLabel lblNewLabel_1_2 = new JLabel("Risk Info");
+		JLabel lblNewLabel_1_2 = new MyLabel("Risk Info",10);
 		lblNewLabel_1_2.setBounds(28, 27, 112, 27);
 		panel_1.add(lblNewLabel_1_2);
 
-		JLabel lblNewLabel_1_4 = new JLabel("Risk Distribution");
-		lblNewLabel_1_4.setBounds(28, 97, 112, 27);
+		JLabel lblNewLabel_1_4 = new MyLabel("Risk Distribution",10);
+		lblNewLabel_1_4.setBounds(28, 92, 112, 27);
 		panel_1.add(lblNewLabel_1_4);
 		riskDisButton.addActionListener(this);
 		riskRelateButton.addActionListener(this);
@@ -289,30 +294,36 @@ public class Home extends JFrame implements ActionListener {
 				if (e.getSource() == taskInfoButton) {
 					taskInfo = file.getPath();
 					addLog("Task info:\n" + "Importing file ..." + taskInfo + "\n");
-
+					inputModel.setTaskInfo(taskInfo);
+					
 				}
 				if (e.getSource() == taskDisButton) {
 					taskDis = file.getPath();
 					addLog("Task Distribution:\n" + "Importing file ...." + taskDis + "\n");
+					inputModel.setTaskDis(taskDis);
 
 				}
 				if (e.getSource() == riskInfoButton) {
 					riskInfo = file.getPath();
 					addLog("Risk info:\n" + "Importing file ...." + riskInfo + "\n");
+					inputModel.setRiskInfo(riskInfo);
 				}
 				if (e.getSource() == riskRelateButton) {
 					riskRelate = file.getPath();
 					addLog("Risk relations:\n" + "Importing file ..." + riskRelate + "\n");
+					inputModel.setRiskRelate(riskRelate);
 
 				}
 				if (e.getSource() == riskDisButton) {
 					riskDis = file.getPath();
 					addLog("Risk Distribution:\n" + "Importing file ...." + riskDis + "\n");
+					inputModel.setRiskDis(riskDis);
 
 				}
 				if (e.getSource() == DInfoButton) {
 					DInfo = file.getPath();
 					addLog("Dimension Info:\n" + "Importing file ...." + DInfo + "\n");
+					inputModel.setDimensionInfo(DInfo);
 				}
 				
 			}
@@ -329,16 +340,19 @@ public class Home extends JFrame implements ActionListener {
 			/* execute the program */
 			log.append("Caculating probability ....\n");
 			log.setCaretPosition(log.getDocument().getLength());
-			try {
-				// caculate prob of each task in project
-				pj = new Project(taskInfo, taskDis, 40);
+			
+				String checkInput = inputModel.checkEmpty();
+				if(checkInput.equals("OK")) {
+					// caculate prob of each task in project
+					pj = new Project(inputModel, 40);
 
-				pj.update();
-				pj.calcProb();
-				addLog("Resources are updated");
-			} catch (Exception e2) {
-				// TODO: handle exception
-			}
+					pj.update();
+					pj.calcProb();
+					addLog("Resources are updated");
+				}else {
+					JOptionPane.showMessageDialog(null, checkInput, "Error",JOptionPane.ERROR_MESSAGE);
+				}
+			
 
 		}
 

@@ -14,6 +14,7 @@ import algorithms.bayesian_network.RiskNet;
 import algorithms.pert.Pert;
 import config.Configuaration;
 import model.Project;
+import model.input.InputModel;
 import model.risk.Risk;
 import model.risk.RiskInfo;
 import model.task.Task;
@@ -36,14 +37,22 @@ public class Dimension extends Project {
 		this.dimensionId = dimensionId;
 	}
 
+	public Dimension(String name, String path, double deadline, String dimensionId, InputModel inputModel) {
+		// TODO Auto-generated constructor stub
+		super(inputModel,deadline);
+		this.name = name;
+		this.taskRelatePath = path;
+		this.dimensionId = dimensionId;
+	}
+
 	public void calcProb() {
-		System.out.println(this.getDeadline());
+//		System.out.println(this.getDeadline());
 		update();
 		// calc prob
 		// delete this prob
 		double probTemp = 1;
 		List<Task> tasks = getTasks();
-		List<RiskInfo> riskInfoList = readRiskInfo(Configuaration.inputPath + "risk_info.csv");
+		List<RiskInfo> riskInfoList = readRiskInfo(getInputModel().getRiskInfo());
 		int checkRisk;
 		for (Task t : tasks) {
 			double taskProb = Utils.gauss(taskDeadlineMap.get(t.getName()), t.getMostlikely(),
@@ -54,8 +63,7 @@ public class Dimension extends Project {
 				if (r.check(this.dimensionId, t.getName())) {
 					checkRisk = 1;
 
-					double riskProb = getRiskProb(Configuaration.inputPath + "risk_relation.csv",
-							Configuaration.inputPath + "risk_distribution.csv");
+					double riskProb = getRiskProb(getInputModel().getRiskRelate(),getInputModel().getRiskDis());
 					DNet.setRiskProb(riskProb);
 					DNet.setTaskProb(taskProb);
 					t.setProb(DNet.calcProb());

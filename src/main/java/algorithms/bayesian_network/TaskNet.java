@@ -44,6 +44,9 @@ public class TaskNet extends BayesianNetwork{
 			addCptTable(Arrays.asList(getNode(nodeName)),Arrays.asList(listProb.get(i),1-listProb.get(i)));
 		}
 		nodes.add(child);
+		if(task.getProbList()==null) {
+			System.out.println("Null prob");
+		}
 		addCptTable(nodes,task.getProbList());
 		// calc prob
 		List<Set<State>> itertoolsSet = new ArrayList<Set<State>>();

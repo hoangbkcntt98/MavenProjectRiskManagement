@@ -9,6 +9,7 @@ import algorithms.bayesian_network.TaskNet;
 import algorithms.pert.Pert;
 import config.Configuaration;
 import model.dimension.Dimension;
+import model.input.InputModel;
 import model.task.Task;
 import service.task.TaskServiceImpl;
 import service.task.TaskServiceInterface;
@@ -22,6 +23,7 @@ public class Project {
 	public double prob;
 	public double deadline;
 	Map<Task, List<Double>> taskProbMap;
+	private InputModel inputModel;
 	public static final String [] dName = {"Size","Productivity","Worker-hour","Duration","Cost"};
 	public Project() {
 		
@@ -32,9 +34,16 @@ public class Project {
 		this.deadline = deadline;
 	}
 
+	public Project(InputModel inputModel, double deadline) {
+		this.inputModel = inputModel;
+		this.deadline = deadline;
+		this.taskDisPath = inputModel.getTaskDis();
+		// TODO Auto-generated constructor stub
+	}
 	public void update() {
 		TaskServiceInterface taskServices = new TaskServiceImpl();
-		this.tasks = taskServices.readTaskListInfo(taskRelatePath);
+		this.tasks = taskServices.readTaskListInfo(inputModel.getTaskInfo());
+		
 		if(taskDisPath!=null) {
 			taskServices.readTaskDistribution(taskDisPath, tasks);
 		}
@@ -54,7 +63,7 @@ public class Project {
 
 	public void calcProb() {
 		List<Task> tasks = getTasks();
-		readTaskDistribution(Configuaration.inputPath + "task_distribution.csv", tasks);
+		readTaskDistribution(taskDisPath, tasks);
 		// get task from data input
 		List<Dimension> dimensionList = new ArrayList<Dimension>();
 		Map<String, Double> deadlineMap = new HashMap<String, Double>();
@@ -64,16 +73,22 @@ public class Project {
 		// update prob for all tasks in each dimension
 		for (int i = 0; i < 5; i++) {
 			String dimensionId = String.valueOf(i);
-			Dimension dimension = new Dimension(dName[i],Configuaration.inputPath + "0_" + dimensionId + ".csv", deadline,dimensionId);
+			Dimension dimension = new Dimension(dName[i],Configuaration.inputPath + "0_" + dimensionId + ".csv", deadline,dimensionId,inputModel);
 			dimension.setTaskDeadlineMap(deadlineMap);
 			dimension.calcProb();
 			dimensionList.add(dimension);
 		}
+		System.out.println("Dimension List Size :"+ dimensionList.size());
 		taskProbMap = new HashMap<Task, List<Double>>();
 		for (Task t : tasks) {
-			taskProbMap.put(t, Dimension.getTaskProbFromDimensionList(dimensionList, t.getName()));
+			List<Double> list=  Dimension.getTaskProbFromDimensionList(dimensionList, t.getName());
+			System.out.println("List Prob size :" + list.size());
+			for(double p: list) {
+				System.out.println(p);
+			}
+			taskProbMap.put(t,list);
 			t.setDimensionList(dimensionList);
-			t.setDimensionProbList(Dimension.getTaskProbFromDimensionList(dimensionList, t.getName()));
+			t.setDimensionProbList(list);
 			
 			TaskNet taskNet = new TaskNet("Task " + t.getName(), t,Dimension.getTaskProbFromDimensionList(dimensionList, t.getName()));
 			taskNet.calcProb();
@@ -88,7 +103,7 @@ public class Project {
 
 	public void readTaskDistribution(String path, List<Task> task) {
 		TaskServiceInterface taskServices = new TaskServiceImpl();
-		taskServices.readTaskDistribution(Configuaration.inputPath + "task_distribution.csv", tasks);
+		taskServices.readTaskDistribution(path, tasks);
 	}
 
 	public List<Task> getTasks() {
@@ -126,6 +141,13 @@ public class Project {
 	public void setTaskRelatePath(String taskRelatePath) {
 		this.taskRelatePath = taskRelatePath;
 	}
+	public InputModel getInputModel() {
+		return inputModel;
+	}
+	public void setInputModel(InputModel inputModel) {
+		this.inputModel = inputModel;
+	}
+	
 	
 	
 }
