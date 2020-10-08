@@ -38,11 +38,12 @@ public class Project {
 		this.inputModel = inputModel;
 		this.deadline = deadline;
 		this.taskDisPath = inputModel.getTaskDis();
+		this.taskRelatePath = inputModel.getTaskInfo();
 		// TODO Auto-generated constructor stub
 	}
 	public void update() {
 		TaskServiceInterface taskServices = new TaskServiceImpl();
-		this.tasks = taskServices.readTaskListInfo(inputModel.getTaskInfo());
+		this.tasks = taskServices.readTaskListInfo(taskRelatePath);
 		
 		if(taskDisPath!=null) {
 			taskServices.readTaskDistribution(taskDisPath, tasks);

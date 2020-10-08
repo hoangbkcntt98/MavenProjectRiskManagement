@@ -72,7 +72,7 @@ public class MainResult extends JFrame {
 	 */
 	public MainResult(Project pj) {
 		this.project = pj;
-		this.projectTemp=pj;
+		this.projectTemp = pj;
 		this.dimensionList = pj.getTasks().get(0).getDimensionList();
 		setTitle("Risk measurement");
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -143,7 +143,7 @@ public class MainResult extends JFrame {
 				if (high.isSelected()) {
 					option = 1;
 					updateGUI(projectTemp, critical.isSelected(), option);
-			
+
 				}
 
 			}
@@ -193,7 +193,6 @@ public class MainResult extends JFrame {
 		optionGroup.add(low);
 
 		// add checkbox controls
-		
 
 		critical.setBounds(141, 37, 135, 23);
 		critical.addActionListener(new ActionListener() {
@@ -204,73 +203,73 @@ public class MainResult extends JFrame {
 			}
 		});
 		taskSetting.add(critical);
-		
+
 		JLabel lblNewLabel = new JLabel("Critical Path");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 9));
 		lblNewLabel.setBounds(131, 21, 92, 14);
 		taskSetting.add(lblNewLabel);
-		
+
 		JPanel projectSetting = new JPanel();
-		projectSetting.setBorder(new TitledBorder(null, "Project Setting", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		projectSetting.setBorder(
+				new TitledBorder(null, "Project Setting", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		projectSetting.setBounds(10, 21, 381, 109);
 		controls.add(projectSetting);
 		projectSetting.setLayout(null);
-		
-				JLabel dLabel = new JLabel("Dimension:");
-				dLabel.setFont(new Font("Tahoma", Font.PLAIN, 9));
-				dLabel.setBounds(20, 78, 80, 20);
-				projectSetting.add(dLabel);
-				JComboBox comboBox_1 = new JComboBox(
-						new String[] { "Project", "Size", "Productivity", "Worker-hour", "Duration", "Cost" });
-				comboBox_1.setBounds(91, 78, 150, 20);
-				projectSetting.add(comboBox_1);
-				
-						deadline = new JTextField(Utils.round(project.getDeadline()));
-						deadline.setBounds(90, 31, 86, 20);
-						projectSetting.add(deadline);
-						deadline.setColumns(10);
-						JLabel deadlineLable = new JLabel("Deadline");
-						deadlineLable.setFont(new Font("Tahoma", Font.PLAIN, 9));
-						deadlineLable.setBounds(20, 31, 80, 20);
-						projectSetting.add(deadlineLable);
-						
-								JButton deadlineButton = new MyButton("Set",10);
-								deadlineButton.setBounds(179, 31, 40, 20);
-								projectSetting.add(deadlineButton);
-								
 
-								deadlineButton.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										projectTemp.setDeadline(Double.parseDouble(deadline.getText()));
-										projectTemp.update();
-										projectTemp.calcProb();
-										
-										project.setDeadline(Double.parseDouble(deadline.getText()));
-										project.update();
-										project.calcProb();
-										dimensionList = project.getTasks().get(0).getDimensionList();
-										System.out.println(projectTemp.getProb());
-										updateGUI(projectTemp, critical.isSelected(),option);
-									}
-								});
-				comboBox_1.addActionListener(new ActionListener() {
+		JLabel dLabel = new JLabel("Dimension:");
+		dLabel.setFont(new Font("Tahoma", Font.PLAIN, 9));
+		dLabel.setBounds(20, 78, 80, 20);
+		projectSetting.add(dLabel);
+		JComboBox comboBox_1 = new JComboBox(
+				new String[] { "Project", "Size", "Productivity", "Worker-hour", "Duration", "Cost" });
+		comboBox_1.setBounds(91, 78, 150, 20);
+		projectSetting.add(comboBox_1);
 
-					public void actionPerformed(ActionEvent e) {
-						JComboBox comboBox = (JComboBox) e.getSource();
-						String o = (String) comboBox.getSelectedItem();
-						System.out.println(o);
-						for (Dimension d : dimensionList) {
-							if (d.getName() == o) {
-								projectTemp = d;
-								updateGUI(projectTemp, critical.isSelected(), option);
-							}
-						}
-						if (o == "Project") {
-							projectTemp = project;
-							updateGUI(projectTemp, critical.isSelected(),option);
-						}
+		deadline = new JTextField(Utils.round(project.getDeadline()));
+		deadline.setBounds(90, 31, 86, 20);
+		projectSetting.add(deadline);
+		deadline.setColumns(10);
+		JLabel deadlineLable = new JLabel("Deadline");
+		deadlineLable.setFont(new Font("Tahoma", Font.PLAIN, 9));
+		deadlineLable.setBounds(20, 31, 80, 20);
+		projectSetting.add(deadlineLable);
+
+		JButton deadlineButton = new MyButton("Set", 10);
+		deadlineButton.setBounds(179, 31, 40, 20);
+		projectSetting.add(deadlineButton);
+
+		deadlineButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				projectTemp.setDeadline(Double.parseDouble(deadline.getText()));
+				projectTemp.update();
+				projectTemp.calcProb();
+
+				project.setDeadline(Double.parseDouble(deadline.getText()));
+				project.update();
+				project.calcProb();
+				dimensionList = project.getTasks().get(0).getDimensionList();
+				System.out.println(projectTemp.getProb());
+				updateGUI(projectTemp, critical.isSelected(), option);
+			}
+		});
+		comboBox_1.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				JComboBox comboBox = (JComboBox) e.getSource();
+				String o = (String) comboBox.getSelectedItem();
+				System.out.println(o);
+				for (Dimension d : dimensionList) {
+					if (d.getName() == o) {
+						projectTemp = d;
+						updateGUI(d, critical.isSelected(), option);
 					}
-				});
+				}
+				if (o == "Project") {
+					projectTemp = project;
+					updateGUI(projectTemp, critical.isSelected(), option);
+				}
+			}
+		});
 		DescriptionPanel des = new DescriptionPanel();
 		des.setBounds(0, 480, 273, 200);
 		contentPane.add(des);
@@ -298,7 +297,7 @@ public class MainResult extends JFrame {
 		contentPane.repaint();
 		contentPane.revalidate();
 		// update
-		
+
 		panel = new StatusBar(height, d);
 		contentPane.add(panel);
 		contentPane.repaint();

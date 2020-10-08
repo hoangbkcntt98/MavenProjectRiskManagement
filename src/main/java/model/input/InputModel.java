@@ -18,6 +18,14 @@ public class InputModel {
 		return "OK";
 		
 	}
+	public void reset() {
+		taskDis=null;
+		taskInfo=null;
+		dimensionInfo=null;
+		riskInfo=null;
+		riskRelate=null;
+		riskDis=null;
+	}
 	public String getTaskDis() {
 		return taskDis;
 	}

@@ -39,8 +39,9 @@ public class Dimension extends Project {
 
 	public Dimension(String name, String path, double deadline, String dimensionId, InputModel inputModel) {
 		// TODO Auto-generated constructor stub
-		super(inputModel,deadline);
+		this.setInputModel(inputModel);
 		this.name = name;
+		this.setDeadline(deadline);
 		this.taskRelatePath = path;
 		this.dimensionId = dimensionId;
 	}
