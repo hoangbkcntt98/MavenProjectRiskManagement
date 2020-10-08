@@ -16,6 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.Predicate;
+
 import algorithms.pert.Pert;
 import cern.jet.random.engine.DRand;
 import cern.jet.random.engine.RandomEngine;
@@ -52,7 +54,8 @@ public class TaskNetPanel extends NetPanel {
 	private Map<Task, Vertex> vertexTaskMap;
 	private Map<Vertex, Task> taskVertexMap;
 	private Project pj;
-	Vertex[] vertex;
+	private Vertex[] vertex;
+	private VertexDisplayPredicate show_vertex;
 
 	/**
 	 * Launch the application.
@@ -151,6 +154,8 @@ public class TaskNetPanel extends NetPanel {
 
 		pr.setEdgePaintFunction(new MyEdgePaintFunction());
 		pr.setEdgeStrokeFunction(new MyEdgeWeightStrokeFunction());
+		show_vertex = new VertexDisplayPredicate(false,0,taskVertexMap);
+		pr.setVertexIncludePredicate(show_vertex);
 		vv.setToolTipFunction(new MyTips());
 
 	}
@@ -321,7 +326,10 @@ public class TaskNetPanel extends NetPanel {
 		}
 
 	}
-
+	public void showVertex(boolean isSet,int opt) {
+		show_vertex.showCritical(isSet,opt);
+	}
+	
 	public class DefaultSettableVertexLocationFunction implements SettableVertexLocationFunction {
 		protected Map v_locations;
 		protected boolean normalized;
@@ -419,6 +427,63 @@ public class TaskNetPanel extends NetPanel {
 		}
 
 	}
+	  private final static class VertexDisplayPredicate implements Predicate
+	    {
+	        protected boolean critical;
+	        protected int optional;
+	        protected final static int HIGH = 1;
+	        protected final static int MEDIUM = 2;
+	        protected final static int LOW = 3;
+	        protected Map<Vertex, Task> taskVertexMap;
+	        
+	        
+	        public VertexDisplayPredicate(boolean filter,int optional,Map<Vertex, Task> taskVertexMap)
+	        {
+	        	this.taskVertexMap = taskVertexMap;
+	        
+	            this.critical = filter;
+	            this.optional = optional;
+	        }
+	        
+	        public void showCritical(boolean b,int opt)
+	        {
+	        	optional =opt;
+	            critical = b;
+	        }
+	        
+	        public boolean evaluate(Object arg0)
+	        {
+	        	
+	            Vertex v = (Vertex)arg0;
+	            Task task = taskVertexMap.get(v);
+	            if (critical) { 
+	            	if(optional ==HIGH) {
+	            		return (task.getSlack()==0&&task.getProb()>=0.7);
+	            	}
+	            	if(optional == MEDIUM) {
+	            		return (task.getSlack()==0&&task.getProb()>=0.4&&task.getProb()<0.7);
+	            	}
+	            	if(optional == LOW) {
+	            		return (task.getSlack()==0&&task.getProb()<0.4);
+	            	}
+	            	return (taskVertexMap.get(v).getSlack()==0);
+	            }
+	            else
+	            {
+	            	if(optional ==HIGH) {
+	            		return (task.getProb()>=0.7);
+	            	}
+	            	if(optional == MEDIUM) {
+	            		return (task.getProb()>=0.4&&task.getProb()<0.7);
+	            	}
+	            	if(optional == LOW) {
+	            		return (task.getProb()<0.4);
+	            	}
+	            	return true;
+	            }
+	                
+	        }
+	    }
 
 
 }

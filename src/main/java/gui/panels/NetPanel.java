@@ -82,6 +82,7 @@ public abstract class NetPanel extends JPanel {
 	PluggableRenderer pr;
 	VisualizationViewer vv;
 	Vertex[] v;
+	
 	SettableVertexLocationFunction vertexLocations;
 	EditingModalGraphMouse graphMouse;
 	String instructions = "<html>" +

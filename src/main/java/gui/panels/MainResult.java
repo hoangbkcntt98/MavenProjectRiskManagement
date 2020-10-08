@@ -8,7 +8,9 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.util.List;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,6 +24,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import algorithms.pert.Pert;
+import gui.common.MyButton;
 import model.Project;
 import model.dimension.Dimension;
 import model.task.Task;
@@ -32,11 +35,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
+import javax.swing.JRadioButton;
 
 public class MainResult extends JFrame {
 
 	private JPanel contentPane;
 	private Project project;
+	private Project projectTemp;
 	private List<Dimension> dimensionList;
 	private TaskNetPanel taskNet;
 	double width;
@@ -44,6 +49,7 @@ public class MainResult extends JFrame {
 	private JPanel panel;
 	private JTextField deadline;
 	private JPanel controls;
+	private int option;
 
 	/**
 	 * Launch the application.
@@ -66,6 +72,7 @@ public class MainResult extends JFrame {
 	 */
 	public MainResult(Project pj) {
 		this.project = pj;
+		this.projectTemp=pj;
 		this.dimensionList = pj.getTasks().get(0).getDimensionList();
 		setTitle("Risk measurement");
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -78,49 +85,157 @@ public class MainResult extends JFrame {
 		width = screenSize.getWidth();
 		height = screenSize.getHeight();
 		setSize(screenSize);
-		
-        
+
 		panel = new StatusBar(height, project);
 		contentPane.add(panel);
 
 		taskNet = new TaskNetPanel(pj);
-		taskNet.setBounds(276, 0, (int) width - panel.getWidth(), panel.getHeight() - 100);
+		taskNet.setBounds(276, 0, (int) width - panel.getWidth(), (int) getHeight() * 7 / 10);
 		contentPane.add(taskNet);
+
+		// add controls panel
 		controls = new JPanel();
 		controls.setBorder(new TitledBorder(null, "controls", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		controls.setLayout(null);
 		controls.setBounds(panel.getWidth(), taskNet.getHeight(), (int) width - panel.getWidth(),
-				(int) height - taskNet.getHeight());
+				(int) height - taskNet.getHeight() - 90);
 		contentPane.add(controls);
+		// add task setting panel
+		JPanel taskSetting = new JPanel();
+		taskSetting
+				.setBorder(new TitledBorder(null, "Task setting", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		taskSetting.setLayout(null);
+		taskSetting.setBounds(404, 10, 559, 120);
+		controls.add(taskSetting);
+		JCheckBox critical = new JCheckBox("only Show critical");
+		critical.setFont(new Font("Tahoma", Font.PLAIN, 9));
+		// add button group
+		JLabel taskLevel = new JLabel("Task successfull level");
+		taskLevel.setFont(new Font("Tahoma", Font.PLAIN, 9));
+		taskLevel.setBounds(10, 20, 111, 16);
+		taskSetting.add(taskLevel);
 
+		JRadioButton optional = new JRadioButton("optional");
+		optional.setFont(new Font("Tahoma", Font.PLAIN, 9));
+		optional.setSelected(true);
+		optional.setBounds(10, 40, 79, 16);
+		optional.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (optional.isSelected()) {
+					option = 0;
+					updateGUI(projectTemp, critical.isSelected(), option);
+				}
+
+			}
+		});
+		taskSetting.add(optional);
+
+		JRadioButton high = new JRadioButton("high", false);
+		high.setFont(new Font("Tahoma", Font.PLAIN, 9));
+		high.setBounds(10, 59, 65, 16);
+		taskSetting.add(high);
+		high.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (high.isSelected()) {
+					option = 1;
+					updateGUI(projectTemp, critical.isSelected(), option);
+			
+				}
+
+			}
+		});
+
+		JRadioButton medium = new JRadioButton("medium", false);
+		medium.setFont(new Font("Tahoma", Font.PLAIN, 9));
+		medium.setBounds(10, 78, 79, 16);
+		medium.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (medium.isSelected()) {
+					option = 2;
+					updateGUI(projectTemp, critical.isSelected(), option);
+				}
+
+			}
+		});
+		taskSetting.add(medium);
+
+		JRadioButton low = new JRadioButton("low", false);
+		low.setFont(new Font("Tahoma", Font.PLAIN, 9));
+		low.setBounds(10, 97, 79, 16);
+		low.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (low.isSelected()) {
+					option = 3;
+					updateGUI(projectTemp, critical.isSelected(), option);
+				}
+
+			}
+		});
+		taskSetting.add(low);
+
+		ButtonGroup optionGroup = new ButtonGroup();
+		optional.setActionCommand("0");
+		high.setActionCommand("1");
+		medium.setActionCommand("2");
+		low.setActionCommand("3");
+
+		optionGroup.add(optional);
+		optionGroup.add(high);
+		optionGroup.add(medium);
+		optionGroup.add(low);
+
+		// add checkbox controls
+		
+
+		critical.setBounds(141, 37, 135, 23);
+		critical.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateGUI(projectTemp, critical.isSelected(), option);
+			}
+		});
+		taskSetting.add(critical);
+		
+		JLabel lblNewLabel = new JLabel("Critical Path");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 9));
+		lblNewLabel.setBounds(131, 21, 92, 14);
+		taskSetting.add(lblNewLabel);
 
 		JLabel dLabel = new JLabel("Dimension:");
 		dLabel.setBounds(10, 97, 80, 20);
 		controls.add(dLabel);
-		JComboBox comboBox = new JComboBox(new String[] {"Project","Size","Productivity","Worker-hour","Duration","Cost"});
+		JComboBox comboBox = new JComboBox(
+				new String[] { "Project", "Size", "Productivity", "Worker-hour", "Duration", "Cost" });
 		comboBox.setBounds(80, 97, 150, 20);
 		controls.add(comboBox);
 		comboBox.addActionListener(new ActionListener() {
 
-	        public void actionPerformed(ActionEvent e)
-	        {
-	            JComboBox comboBox = (JComboBox) e.getSource();
-	            String o = (String)comboBox.getSelectedItem();
-	            System.out.println(o);
-	            for(Dimension d:dimensionList) {
-	            	if(d.getName()==o) {
-	            		
-	            		updateGUI(d);
-	            	}
-	            }
-	            if(o=="Project") {
-	         
-	            	updateGUI(project);
-	            }
-	        }
-	    });  
-		
-		
+			public void actionPerformed(ActionEvent e) {
+				JComboBox comboBox = (JComboBox) e.getSource();
+				String o = (String) comboBox.getSelectedItem();
+				System.out.println(o);
+				for (Dimension d : dimensionList) {
+					if (d.getName() == o) {
+						projectTemp = d;
+						updateGUI(projectTemp, critical.isSelected(), option);
+					}
+				}
+				if (o == "Project") {
+					projectTemp = project;
+					updateGUI(projectTemp, critical.isSelected(),option);
+				}
+			}
+		});
+
 		deadline = new JTextField(Utils.round(project.getDeadline()));
 		deadline.setBounds(80, 50, 86, 20);
 		controls.add(deadline);
@@ -128,39 +243,45 @@ public class MainResult extends JFrame {
 		JLabel deadlineLable = new JLabel("Deadline");
 		deadlineLable.setBounds(10, 50, 80, 20);
 		controls.add(deadlineLable);
-		
-		JButton deadlineButton = new JButton("Set");
+
+		JButton deadlineButton = new MyButton("Set",10);
 		deadlineButton.setBounds(169, 50, 40, 20);
-		deadlineButton.setFont(new Font("Arial", Font.PLAIN, 10));
-		deadlineButton.setMargin(new Insets(0, 0, 0, 0));
 		
+
 		deadlineButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				projectTemp.setDeadline(Double.parseDouble(deadline.getText()));
+				projectTemp.update();
+				projectTemp.calcProb();
+				
 				project.setDeadline(Double.parseDouble(deadline.getText()));
 				project.update();
 				project.calcProb();
-			
 				dimensionList = project.getTasks().get(0).getDimensionList();
-				
-				updateGUI(project);
+				System.out.println(projectTemp.getProb());
+				updateGUI(projectTemp, critical.isSelected(),option);
 			}
 		});
 		controls.add(deadlineButton);
-		
-		
-		
+		DescriptionPanel des = new DescriptionPanel();
+		des.setBounds(0, 480, 273, 200);
+		contentPane.add(des);
+
 	}
+
 	public void removeAll() {
 		contentPane.removeAll();
 	}
-	public void updateGUI(Project d) {
+
+	public void updateGUI(Project d, boolean isSet, int opt) {
 		// delete graph
 		contentPane.remove(taskNet);
 		contentPane.repaint();
 		contentPane.revalidate();
 		// update graph
 		taskNet = new TaskNetPanel(d);
-		taskNet.setBounds(276, 0, (int) width - panel.getWidth(), panel.getHeight() - 100);
+		taskNet.showVertex(isSet, opt);
+		taskNet.setBounds(276, 0, (int) width - panel.getWidth(), (int) getHeight() * 7 / 10);
 		contentPane.add(taskNet);
 		contentPane.repaint();
 		contentPane.revalidate();
@@ -169,6 +290,7 @@ public class MainResult extends JFrame {
 		contentPane.repaint();
 		contentPane.revalidate();
 		// update
+		
 		panel = new StatusBar(height, d);
 		contentPane.add(panel);
 		contentPane.repaint();
