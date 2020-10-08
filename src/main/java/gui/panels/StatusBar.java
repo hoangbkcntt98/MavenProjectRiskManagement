@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.border.EtchedBorder;
@@ -26,9 +27,9 @@ public class StatusBar extends JPanel {
 	 */
 	public StatusBar(double height,Project project) {
 		setBorder(new TitledBorder(
-				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Status",
+				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Task successfull level",
 				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		setBounds(0, 0, 273,(int) height-100);
+		setBounds(0, 0, 273,(int) height-200);
 		setLayout(null);
 		List<Task> tasks = project.getTasks();
 		JLabel projectLabel = new JLabel("Project");
@@ -41,35 +42,47 @@ public class StatusBar extends JPanel {
 		projectLabel.setBounds(10, 39, 46, 14);
 		add(projectLabel);
 		add(projectProb);
+		
+		JButton detailP = new JButton("Detail");
+		detailP.setBounds(200, 39, 50, 14);
+		detailP.setFont(new Font("Arial", Font.PLAIN, 10));
+		detailP.setMargin(new Insets(0, 0, 0, 0));
+		detailP.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ProjectInformation pInfor = new ProjectInformation(project);
+				pInfor.run();
+			}
+		});
+		add(detailP);
 
 		JProgressBar progressBar_1 = new JProgressBar();
 		progressBar_1.setValue(100);
 		progressBar_1.setForeground(Color.red);
-		progressBar_1.setBounds(10, 608, 63, 14);
+		progressBar_1.setBounds(10, 500, 63, 14);
 		add(progressBar_1);
 
 		JProgressBar progressBar_1_1 = new JProgressBar();
 		progressBar_1_1.setValue(100);
 		progressBar_1_1.setForeground(Color.yellow);
-		progressBar_1_1.setBounds(97, 608, 63, 14);
+		progressBar_1_1.setBounds(97, 500, 63, 14);
 		add(progressBar_1_1);
 
 		JProgressBar progressBar_1_2 = new JProgressBar();
 		progressBar_1_2.setValue(100);
 		progressBar_1_2.setForeground(Color.green);
-		progressBar_1_2.setBounds(181, 608, 63, 14);
+		progressBar_1_2.setBounds(181, 500, 63, 14);
 		add(progressBar_1_2);
 
 		JLabel lblNewLabel_1 = new JLabel("Low");
-		lblNewLabel_1.setBounds(20, 633, 46, 14);
+		lblNewLabel_1.setBounds(20, 470, 46, 14);
 		add(lblNewLabel_1);
 
 		JLabel lblNewLabel_1_1 = new JLabel("Medium");
-		lblNewLabel_1_1.setBounds(107, 633, 46, 14);
+		lblNewLabel_1_1.setBounds(107, 470, 46, 14);
 		add(lblNewLabel_1_1);
 
 		JLabel lblNewLabel_1_2 = new JLabel("High");
-		lblNewLabel_1_2.setBounds(191, 633, 46, 14);
+		lblNewLabel_1_2.setBounds(191, 470, 46, 14);
 		add(lblNewLabel_1_2);
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);

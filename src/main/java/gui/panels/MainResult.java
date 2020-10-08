@@ -9,8 +9,12 @@ import java.awt.Toolkit;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
@@ -25,6 +29,7 @@ import utils.Utils;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 
@@ -38,7 +43,7 @@ public class MainResult extends JFrame {
 	double height;
 	private JPanel panel;
 	private JTextField deadline;
-	private JButton[] dimensionButtonList;
+	private JPanel controls;
 
 	/**
 	 * Launch the application.
@@ -62,7 +67,8 @@ public class MainResult extends JFrame {
 	public MainResult(Project pj) {
 		this.project = pj;
 		this.dimensionList = pj.getTasks().get(0).getDimensionList();
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setTitle("Risk measurement");
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(0, 0, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -72,51 +78,47 @@ public class MainResult extends JFrame {
 		width = screenSize.getWidth();
 		height = screenSize.getHeight();
 		setSize(screenSize);
+		
+        
 		panel = new StatusBar(height, project);
 		contentPane.add(panel);
 
 		taskNet = new TaskNetPanel(pj);
 		taskNet.setBounds(276, 0, (int) width - panel.getWidth(), panel.getHeight() - 100);
 		contentPane.add(taskNet);
-		JPanel controls = new JPanel();
+		controls = new JPanel();
 		controls.setBorder(new TitledBorder(null, "controls", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		controls.setLayout(null);
 		controls.setBounds(panel.getWidth(), taskNet.getHeight(), (int) width - panel.getWidth(),
 				(int) height - taskNet.getHeight());
 		contentPane.add(controls);
 
-		dimensionButtonList = new JButton[dimensionList.size()];
-		int count = 0;
-		for (Dimension d : dimensionList) {
-			Pert.showCriticalPath(d.getCriticalPath());
-			dimensionButtonList[count] = new JButton(d.getName());
-			dimensionButtonList[count].setBounds((count + 1) * 100, 100, 100, 23);
-			dimensionButtonList[count].setFont(new Font("Arial", Font.PLAIN, 10));
-			dimensionButtonList[count].setMargin(new Insets(0, 0, 0, 0));
-			dimensionButtonList[count].addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					updateGUI(d);
-				}
-			});
 
-			controls.add(dimensionButtonList[count]);
-			count++;
-		}
+		JLabel dLabel = new JLabel("Dimension:");
+		dLabel.setBounds(10, 97, 80, 20);
+		controls.add(dLabel);
+		JComboBox comboBox = new JComboBox(new String[] {"Project","Size","Productivity","Worker-hour","Duration","Cost"});
+		comboBox.setBounds(80, 97, 150, 20);
+		controls.add(comboBox);
+		comboBox.addActionListener(new ActionListener() {
 
-		JButton projectButton = new JButton("Project ");
-		projectButton.setBounds((count + 1) * 100, 100, 100, 23);
-		projectButton.setFont(new Font("Arial", Font.PLAIN, 10));
-		projectButton.setMargin(new Insets(0, 0, 0, 0));
-		projectButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				updateGUI(project);
-
-			}
-		});
-
-		controls.add(projectButton);
+	        public void actionPerformed(ActionEvent e)
+	        {
+	            JComboBox comboBox = (JComboBox) e.getSource();
+	            String o = (String)comboBox.getSelectedItem();
+	            System.out.println(o);
+	            for(Dimension d:dimensionList) {
+	            	if(d.getName()==o) {
+	            		
+	            		updateGUI(d);
+	            	}
+	            }
+	            if(o=="Project") {
+	         
+	            	updateGUI(project);
+	            }
+	        }
+	    });  
 		
 		
 		deadline = new JTextField(Utils.round(project.getDeadline()));
@@ -137,26 +139,9 @@ public class MainResult extends JFrame {
 				project.setDeadline(Double.parseDouble(deadline.getText()));
 				project.update();
 				project.calcProb();
+			
 				dimensionList = project.getTasks().get(0).getDimensionList();
-				for (int count = 0; count < dimensionButtonList.length; count++) {
-					
-					Dimension d = dimensionList.get(count);
-					controls.remove(dimensionButtonList[count]);
-					controls.repaint();
-					controls.revalidate();
-					dimensionButtonList[count] = new JButton(d.getName());
-					dimensionButtonList[count].setBounds((count + 1) * 100, 100, 100, 23);
-					dimensionButtonList[count].setFont(new Font("Arial", Font.PLAIN, 10));
-					dimensionButtonList[count].setMargin(new Insets(0, 0, 0, 0));
-					dimensionButtonList[count].addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							updateGUI(d);
-						}
-					});
-					controls.add(dimensionButtonList[count]);
-					count++;
-				}
-
+				
 				updateGUI(project);
 			}
 		});
@@ -165,7 +150,9 @@ public class MainResult extends JFrame {
 		
 		
 	}
-
+	public void removeAll() {
+		contentPane.removeAll();
+	}
 	public void updateGUI(Project d) {
 		// delete graph
 		contentPane.remove(taskNet);

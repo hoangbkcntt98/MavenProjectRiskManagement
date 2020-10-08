@@ -122,10 +122,7 @@ public class TaskNetPanel extends NetPanel {
 		return v;
 	}
 
-	@Override
-	public void setLocationVertex() {
-		
-	}
+
 
 	@Override
 	/**
@@ -147,12 +144,10 @@ public class TaskNetPanel extends NetPanel {
 	}
 
 	@Override
-	public void setVertexPaintFunction() {
-		// TODO Auto-generated method stub
-		super.setVertexPaintFunction();
+	public void setConfigJung() {
 		pr.setVertexPaintFunction(new MyVertexPaintFunction(pj));
 		pr.setVertexShapeFunction(new MyVertexShapeFunction());
-		pr.setVertexStrokeFunction(new ConstantVertexStrokeFunction());
+		pr.setVertexStrokeFunction(new MyVertexStrokeFunction());
 
 		pr.setEdgePaintFunction(new MyEdgePaintFunction());
 		pr.setEdgeStrokeFunction(new MyEdgeWeightStrokeFunction());
@@ -160,11 +155,11 @@ public class TaskNetPanel extends NetPanel {
 
 	}
 
+
 	@Override
-	public void setEdgePaintFunction() {
-		// TODO Auto-generated method stub
-		super.setEdgePaintFunction();
-//		pr.setEdgePaintFunction(new MyEdgePaintFunction());
+	public void setLayout() {
+		layout.initialize(new Dimension(700, 600), new MyVertexLocationFunction(new Dimension(1000, 600)));
+		
 	}
 
 	boolean isBlessed(Edge e) {
@@ -281,13 +276,13 @@ public class TaskNetPanel extends NetPanel {
 		}
 	}
 
-	public class ConstantVertexStrokeFunction implements VertexStrokeFunction {
+	public class MyVertexStrokeFunction implements VertexStrokeFunction {
 		protected Stroke heavy;
 		protected Stroke light;
 		protected Stroke dotted = PluggableRenderer.DOTTED;
 
-		public ConstantVertexStrokeFunction() {
-			this.heavy = new BasicStroke(5);
+		public MyVertexStrokeFunction() {
+			this.heavy = new BasicStroke(3);
 			this.light = new BasicStroke(1);
 		}
 
@@ -296,7 +291,7 @@ public class TaskNetPanel extends NetPanel {
 		 */
 		public Stroke getStroke(Vertex v) {
 			if (getTaskByVertex(v).getSlack() == 0) {
-				if (v.getOutEdges().size() == 0 || v.getInEdges().size() == 0)
+				if (getTaskByVertex(v).getSlack()==0)
 					return heavy;
 				return new BasicStroke(1);
 			}
@@ -360,61 +355,8 @@ public class TaskNetPanel extends NetPanel {
 			return v_locations.keySet().iterator();
 		}
 	}
-	public class RandomVertexLocationDecorator implements VertexLocationFunction
-	{
-	    RandomEngine rand;
-	    Map v_locations = new HashMap();
-	    Dimension dim;
-	    
-	    public RandomVertexLocationDecorator(Dimension d) 
-	    {
-	        this.rand = new DRand((int)(new Date().getTime()));
-	        this.dim = d;
-	    }
-	    
-	    public RandomVertexLocationDecorator(Dimension d, int seed)
-	    {
-	        this.rand = new DRand(seed);
-	        this.dim = d;
-	    }
-	    
-	    /**
-	     * Resets all vertex locations returned by <code>getLocation</code>
-	     * to new (random) locations.
-	     */
-	    public void reset()
-	    {
-	        v_locations.clear();
-	    }
-	    
-	    public Point2D getLocation(ArchetypeVertex v)
-	    {
-	        Point2D location = (Point2D)v_locations.get(v);
-	        if (location == null)
-	        {
-	        	Vertex v1 = (Vertex) v;
-//	        	location = new Point2D.Double(rand.nextDouble() * dim.width, rand.nextDouble() * dim.height);
-	        	location = new Point2D.Double(0,0);
-//	        	location = new Point2D.Double(rand.nextDouble() * dim.width, rand.nextDouble() * dim.height);
-	        	if(v1.getOutEdges().size()==0||v1.getInEdges().size()==0) {
-	        		location = new Point2D.Double(0,0);
-	        	}
-	            
-	            v_locations.put(v, location);
-	        }
-	        return location;
-	    }
-
-	    public Iterator getVertexIterator()
-	    {
-	        return v_locations.keySet().iterator();
-	    }
-	}
-	@Override
-	public void setLayout() {
-		layout.initialize(new Dimension(700, 600), new MyVertexLocationFunction(new Dimension(1000, 600)));
-		
-	}
+	
+	
 	public class MyVertexLocationFunction implements VertexLocationFunction{
 		Map v_locations = new HashMap();
 		Dimension dim;
@@ -433,8 +375,6 @@ public class TaskNetPanel extends NetPanel {
 
 			if (location == null) {
 				Vertex v1 = (Vertex) v;
-				location = new Point2D.Double(rand.nextDouble() * dim.width, rand.nextDouble() * dim.height);
-				System.out.println(getTaskByVertex(v1).getName());
 				if(getTaskByVertex(v1).getName().equals("B")) {
 					location = new Point2D.Double(220.5,441);
 				}
@@ -445,7 +385,7 @@ public class TaskNetPanel extends NetPanel {
 					location = new Point2D.Double(220.5, 161.0);
 				}
 				if(getTaskByVertex(v1).getName().equals("E")) {
-					location = new Point2D.Double(189.0, 298.66666);
+					location = new Point2D.Double(260.0, 298.66666);
 				}
 				if(getTaskByVertex(v1).getName().equals("F")) {
 					location = new Point2D.Double(364.0, 161.0);

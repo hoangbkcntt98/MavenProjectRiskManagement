@@ -122,8 +122,7 @@ public abstract class NetPanel extends JPanel {
 
 		pr.setEdgeShapeFunction(new EdgeShape.Line());
 		pr.setVertexLabelCentering(true);
-		setVertexPaintFunction();
-		setEdgePaintFunction();
+		setConfigJung();
 		setVertexLable();
 //		generateVertexShape(pr);
 //		vv.setToolTipFunction(new DefaultToolTipFunction());
@@ -133,29 +132,7 @@ public abstract class NetPanel extends JPanel {
 	}
 	public abstract void setLayout();
 
-	public void setLocationVertex() {
-
-	}
-
-	public void setVertexPaintFunction() {
-
-	}
-
-	public void setEdgePaintFunction() {
-
-	}
-
-//	public void generateVertexShape(PluggableRenderer pr) {
-//		// change size of vertex
-//		pr.setVertexShapeFunction(new AbstractVertexShapeFunction(new ConstantVertexSizeFunction(40),
-//				new ConstantVertexAspectRatioFunction(1.0f)) {
-//			public Shape getShape(Vertex v) {
-//				// TODO Auto-generated method stub
-//				return factory.getEllipse(v);
-//			}
-//		});
-//	}
-
+	public abstract void setConfigJung() ;
 	public void drawToolsBar() {
 
 		graphMouse = new EditingModal();
@@ -186,20 +163,14 @@ public abstract class NetPanel extends JPanel {
 				JOptionPane.showMessageDialog(vv, instructions);
 			}
 		});
-		JButton back = new JButton("Back");
-		back.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
-			}
-		});
+		
 		JPanel controls = new JPanel();
 		controls.add(plus);
 		controls.add(minus);
 		JComboBox modeBox = graphMouse.getModeComboBox();
 		controls.add(modeBox);
 		controls.add(help);
-		controls.add(back);
+		
 		add(controls, BorderLayout.SOUTH);
 	}
 
