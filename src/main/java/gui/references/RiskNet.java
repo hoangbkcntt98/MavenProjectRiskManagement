@@ -34,6 +34,7 @@ public class RiskNet extends BayesianNet{
 			public void run() {
 				try {
 					RiskNet frame = new RiskNet(risks);
+					frame.setDefaultCloseOperation(HIDE_ON_CLOSE);
 					frame.setTitle("Risk Model");
 					frame.drawGraph();
 					frame.setContent();

@@ -9,5 +9,9 @@ public class MyLabel extends JLabel{
 		super(name);
 		setFont(new Font("Arial", Font.PLAIN, fontSize));
 	}
+	public MyLabel(String name,int fontType,int fontSize) {
+		super(name);
+		setFont(new Font("Arial", fontType, fontSize));
+	}
 
 }

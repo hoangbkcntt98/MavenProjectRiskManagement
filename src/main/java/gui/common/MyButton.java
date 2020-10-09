@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import gui.panels.ProjectInformation;
+import gui.infomation.ProjectInformation;
 
 public class MyButton extends JButton{
 	

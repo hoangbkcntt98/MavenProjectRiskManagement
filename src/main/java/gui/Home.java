@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -27,11 +29,13 @@ import javax.swing.border.TitledBorder;
 import config.Configuaration;
 import gui.common.MyButton;
 import gui.common.MyLabel;
+import gui.common.MyProgress;
+import gui.common.ThreadSimple;
 import gui.panels.FindTask;
 import gui.panels.MainResult;
-import gui.references.ProgressBarDemo;
 import model.Project;
 import model.input.InputModel;
+import javax.swing.JProgressBar;
 
 public class Home extends JFrame implements ActionListener {
 
@@ -43,7 +47,7 @@ public class Home extends JFrame implements ActionListener {
 	private JButton riskDisButton;
 	private JButton taskDisButton;
 	private JButton riskRelateButton;
-	private JButton autoInput;
+	private JButton resetInput;
 	private JButton showResult;
 	private JFileChooser fc;
 	private String riskInfo;
@@ -66,6 +70,7 @@ public class Home extends JFrame implements ActionListener {
 	JLabel riskRelateLabel;
 	JLabel riskInfoLabel;
 	JLabel riskDisLabel;
+	JButton multiImport;
 
 	/**
 	 * Launch the application.
@@ -183,23 +188,18 @@ public class Home extends JFrame implements ActionListener {
 		contentPane.add(input);
 
 		exeButton = new JButton("Import");
-		exeButton.setBounds(154, 199, 89, 23);
+		exeButton.setBounds(119, 183, 89, 23);
 		exeButton.addActionListener(this);
 		input.add(exeButton);
 
-		autoInput = new JButton("Reset");
-		autoInput.addActionListener(this);
-		autoInput.setBounds(253, 199, 89, 23);
-		input.add(autoInput);
-
-		showResult = new JButton("Result");
-		showResult.addActionListener(this);
-		showResult.setBounds(359, 199, 89, 23);
-		input.add(showResult);
+		resetInput = new MyButton("Reset", 10);
+		resetInput.addActionListener(this);
+		resetInput.setBounds(239, 91, 53, 23);
+		input.add(resetInput);
 
 		taskInput = new JPanel();
 		taskInput.setBorder(new TitledBorder(null, "Task Input", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		taskInput.setBounds(20, 25, 223, 147);
+		taskInput.setBounds(10, 25, 223, 147);
 		input.add(taskInput);
 		taskInput.setLayout(null);
 
@@ -223,7 +223,7 @@ public class Home extends JFrame implements ActionListener {
 
 		riskInput = new JPanel();
 		riskInput.setBorder(new TitledBorder(null, "Risk Input", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		riskInput.setBounds(286, 25, 237, 147);
+		riskInput.setBounds(302, 25, 237, 147);
 		input.add(riskInput);
 		riskInput.setLayout(null);
 
@@ -244,6 +244,16 @@ public class Home extends JFrame implements ActionListener {
 
 		riskDisLabel = new MyLabel("Risk Distribution", 10);
 		riskDisLabel.setBounds(28, 92, 112, 27);
+
+		multiImport = new JButton("AutoSet");
+		multiImport.addActionListener(this);
+		multiImport.setBounds(20, 183, 89, 23);
+		input.add(multiImport);
+
+		showResult = new JButton("Result");
+		showResult.setBounds(263, 183, 89, 23);
+		input.add(showResult);
+		showResult.addActionListener(this);
 		initInputComp();
 
 		riskDisButton.addActionListener(this);
@@ -291,11 +301,12 @@ public class Home extends JFrame implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == autoInput) {
+		if (e.getSource() == resetInput) {
 			taskInfo = Configuaration.inputPath + "0.csv";
 			taskDis = Configuaration.inputPath + "task_distribution.csv";
 		}
-		if (e.getSource() != exeButton && e.getSource() != autoInput && e.getSource() != showResult) {
+		if (e.getSource() != exeButton && e.getSource() != resetInput && e.getSource() != showResult
+				&& e.getSource() != multiImport) {
 			fc = new JFileChooser(Configuaration.inputPath);
 			int returnVal = fc.showOpenDialog(Home.this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -347,13 +358,58 @@ public class Home extends JFrame implements ActionListener {
 			}
 
 		} else {
-			if (e.getSource() == showResult) {
-				addLog("Task Network Visualization");
-				MainResult rs = new MainResult(pj);
-				rs.run();
-				addLog("Bayesian Network Visualization ....");
+			if (e.getSource() == multiImport) {
+				ThreadSimple t1 = new ThreadSimple("Reading Resources ...");
+				t1.start();
+				Thread t2 = new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+//						try {
+//							Thread.sleep(1000);
+//						} catch (InterruptedException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+						inputModel.setDimensionInfo(Configuaration.inputPath + "dimension_info.csv");
+						inputModel.setRiskDis((Configuaration.inputPath + "risk_distribution.csv"));
+						inputModel.setRiskInfo(Configuaration.inputPath + "risk_info.csv");
+						inputModel.setRiskRelate(Configuaration.inputPath + "risk_relation.csv");
+						inputModel.setTaskDis(Configuaration.inputPath + "task_distribution.csv");
+						inputModel.setTaskInfo(Configuaration.inputPath + "task_info.csv");
+						pj = new Project(inputModel, 40);
+						pj.update();
+						pj.calcProb();
+						JOptionPane.showMessageDialog(null, "Resources are updated");
+					}
+				});
+				t2.start();
 			}
-			if (e.getSource() == autoInput) {
+			if (e.getSource() == showResult) {
+
+				ThreadSimple t1 = new ThreadSimple("Generating GUI ...");
+				t1.start();
+				Thread t3 = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							Thread.sleep(3000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						MainResult rs = new MainResult(pj);
+						rs.run();
+						addLog("Bayesian Network Visualization ....");
+					}
+				});
+				t3.start();// if t1 is finished then t2 will start
+				if (t3.isAlive()) {
+
+				}
+				addLog("Task Network Visualization");
+
+			}
+			if (e.getSource() == resetInput) {
 				inputModel.reset();
 				taskInput.removeAll();
 				riskInput.removeAll();
@@ -369,22 +425,36 @@ public class Home extends JFrame implements ActionListener {
 				input.repaint();
 
 			}
-			if(e.getSource()== exeButton) {
-				TheadSimple t1 = new TheadSimple("Importing Resource...");
+			if (e.getSource() == exeButton) {
+				ThreadSimple t1 = new ThreadSimple("Importing Resource...");
 				t1.start();
 				/* execute the program */
 				log.setCaretPosition(log.getDocument().getLength());
 
 				String checkInput = inputModel.checkEmpty();
 				if (checkInput.equals("OK")) {
-					TheadSimple2 t2 = new TheadSimple2();
+					Thread t2 = new Thread(new Runnable() {
+
+						@Override
+						public void run() {
+							try {
+								pj = new Project(inputModel, 40);
+								pj.update();
+								pj.calcProb();
+								JOptionPane.showMessageDialog(null, "Resources are updated");
+							} catch (Exception e) {
+								JOptionPane.showMessageDialog(null, "Import Fails!\nResoure is invalid!", "ERRORS",
+										JOptionPane.ERROR_MESSAGE);
+								// TODO: handle exception
+							}
+						}
+					});
 					t2.start();
 					addLog("Resources are updated");
 				} else {
 					JOptionPane.showMessageDialog(null, checkInput, "Errors", JOptionPane.ERROR_MESSAGE);
 				}
 			}
-			
 
 		}
 
@@ -401,35 +471,4 @@ public class Home extends JFrame implements ActionListener {
 		input.repaint();
 	}
 
-	public class TheadSimple extends Thread {
-		private String name;
-
-		TheadSimple(String name) {
-			this.name = name;
-		}
-
-		public void run() {
-			ProgressBarDemo demo = new ProgressBarDemo();
-			demo.showProgressBarDemo(name);
-
-		}
-
-	}
-
-	public class TheadSimple2 extends Thread {
-		public void run() {
-			try {
-				pj = new Project(inputModel, 40);
-				pj.update();
-				pj.calcProb();
-				JOptionPane.showMessageDialog(null, "Resources are updated");
-			} catch (Exception e) {
-				JOptionPane.showMessageDialog(null, "Import Fails!\nResoure is invalid!", "ERRORS",
-						JOptionPane.ERROR_MESSAGE);
-				// TODO: handle exception
-			}
-
-		}
-
-	}
 }

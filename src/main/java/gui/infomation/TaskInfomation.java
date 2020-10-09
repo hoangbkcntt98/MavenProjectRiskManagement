@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import gui.common.MyButton;
 import gui.references.RiskNet;
 import gui.references.TaskNet;
 import model.dimension.Dimension;
@@ -168,19 +169,20 @@ public class TaskInfomation extends JFrame {
 		panel.add(prob);
 
 		if (risks != null) {
-			JLabel DiemsionLabel = new JLabel("Risk Model : ");
+			JLabel DiemsionLabel = new JLabel("Risk Level : ");
 			DiemsionLabel.setBounds(218, 80, 150, 14);
 			panel.add(DiemsionLabel);
-			JButton dimension = new JButton("View Risk Model");
-			dimension.addActionListener(new ActionListener() {
+
+			JButton riskLevel = new MyButton("View Risk Level",9);
+			riskLevel.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					// view risk net
-					RiskNet riskNet = new RiskNet(risks);
-					riskNet.run();
+					RiskLevelInformation riskLevel = new RiskLevelInformation(risks);
+					riskLevel.run();
 				}
 			});
-			dimension.setBounds(218, 109, 113, 23);
-			panel.add(dimension);
+			riskLevel.setBounds(218, 109, 113, 23);
+			panel.add(riskLevel);
 		}
 
 		JButton close = new JButton("Close");

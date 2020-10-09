@@ -1,4 +1,5 @@
-package gui.references;
+package gui.common;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -17,24 +18,26 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
  
-public class ProgressBarDemo {
+public class MyProgress {
  
     private JFrame mainFrame;
     private JLabel headerLabel;
     private JLabel statusLabel;
     private JPanel controlPanel;
+    private String text;
  
-    public ProgressBarDemo(){
+    public MyProgress(){
        prepareGUI();
     }
  
  
     private void prepareGUI() {
-        mainFrame = new JFrame();
+        mainFrame = new JFrame("Loading...");
         mainFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         mainFrame.setBounds(400,500,200,100);
         mainFrame.setSize(200, 100);
         mainFrame.setLayout(new GridLayout(3, 1));
+        mainFrame.setResizable(false);
         mainFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent windowEvent) {
                 System.exit(0);
@@ -59,10 +62,12 @@ public class ProgressBarDemo {
     private JTextArea outputTextArea;
  
     public void showProgressBarDemo(String name) {
+    	text = name;
         headerLabel.setText(name);
         progressBar = new JProgressBar(0, 100);
         progressBar.setValue(0);
         progressBar.setStringPainted(true);
+        progressBar.setForeground(Color.green);
 //        outputTextArea = new JTextArea("", 5, 20);
         task = new Task();
         task.start();
@@ -77,12 +82,30 @@ public class ProgressBarDemo {
         public void run() {
             for (int i = 0; i <= 100; i += 10) {
                 final int progress = i;
+           
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         progressBar.setValue(progress);
-//                        outputTextArea.setText(
-//                                outputTextArea.getText() + 
-//                                String.format("Completed %d%% of task.\n", progress));
+                        if(text=="Reading Resources ...")
+                        {
+                        	if(progress==30) {
+                            	headerLabel.setText("Importing Resources....");
+                            }
+                        	else if(progress == 60) {
+                            	headerLabel.setText("Generating Project ...");
+                            }
+                        	
+                        }
+                        if(text=="Generating GUI ...") {
+                        	if(progress==30) {
+                            	headerLabel.setText("Loading Data....");
+                            }
+                        	else if(progress == 60) {
+                            	headerLabel.setText("Generating Network ...");
+                            }
+                        }
+                        
+                        
                     }
                 });
                 try {
