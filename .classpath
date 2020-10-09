@@ -24,6 +24,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="E:/MavenProjectRiskManagement/MavenProjectRiskManagement/lib/bayesserver-9.2.jar"/>
+	<classpathentry kind="lib" path="lib/ij-1.45.jar"/>
+	<classpathentry kind="lib" path="lib/bayesserver-9.2.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
