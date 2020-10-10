@@ -25,6 +25,7 @@ import javax.swing.border.TitledBorder;
 
 import algorithms.pert.Pert;
 import gui.common.MyButton;
+import gui.common.MyFrame;
 import model.Project;
 import model.dimension.Dimension;
 import model.task.Task;
@@ -37,7 +38,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JRadioButton;
 
-public class MainResult extends JFrame {
+public class MainResult extends MyFrame {
 
 	private JPanel contentPane;
 	private Project project;
@@ -74,9 +75,11 @@ public class MainResult extends JFrame {
 		this.project = pj;
 		this.projectTemp = pj;
 		this.dimensionList = pj.getTasks().get(0).getDimensionList();
+
 		setTitle("Risk measurement");
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(0, 0, 450, 300);
+		setResizable(false);
+		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -84,7 +87,8 @@ public class MainResult extends JFrame {
 		java.awt.Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		width = screenSize.getWidth();
 		height = screenSize.getHeight();
-		setSize(screenSize);
+		setBounds(0, 0,(int)width-10,(int)(height*9.5/10));
+		setLocationRelativeTo(null);
 
 		panel = new StatusBar(height, project);
 		contentPane.add(panel);

@@ -19,13 +19,15 @@ import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.border.TitledBorder;
 
+import gui.common.MyButton;
+import gui.common.MyFrame;
 import gui.common.MyLabel;
 import gui.common.MyProgressBar;
 import gui.references.RiskNet;
 
 import javax.swing.JButton;
 
-public class RiskLevelInformation extends JFrame {
+public class RiskLevelInformation extends MyFrame {
 
 	private JPanel contentPane;
 	private List<Risk> risks;
@@ -64,6 +66,8 @@ public class RiskLevelInformation extends JFrame {
 		this.risks = risks;
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(100, 100, 679, 399);
+		setLocationRelativeTo(null);
+		setTitle("Risk level Information");
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -75,7 +79,7 @@ public class RiskLevelInformation extends JFrame {
 		contentPane.add(panel);
 		panel.setLayout(null);
 
-		JButton riskModel = new JButton("Risk Model");
+		JButton riskModel = new MyButton("Risk Model",10);
 		riskModel.addActionListener(new ActionListener() {
 
 			@Override

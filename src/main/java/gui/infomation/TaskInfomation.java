@@ -13,13 +13,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import gui.common.MyButton;
+import gui.common.MyFrame;
 import gui.references.RiskNet;
 import gui.references.TaskNet;
 import model.dimension.Dimension;
 import model.risk.Risk;
 import model.task.Task;
 
-public class TaskInfomation extends JFrame {
+public class TaskInfomation extends MyFrame {
 
 	private JPanel contentPane;
 	private JLabel name;
@@ -76,6 +77,7 @@ public class TaskInfomation extends JFrame {
 
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(100, 100, 505, 329);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

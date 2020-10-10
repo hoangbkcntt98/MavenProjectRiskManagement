@@ -18,6 +18,16 @@ public class InputModel {
 		return "OK";
 		
 	}
+	public String [] generateSources() {
+		String [] sources = new String[6];
+		sources[0] = getTaskDis();
+		sources[1] = getTaskInfo();
+		sources[2] = getDimensionInfo();
+		sources[3] = getRiskInfo();
+		sources[4] = getRiskRelate();
+		sources[5] = getRiskDis();
+		return sources;
+	}
 	public void reset() {
 		taskDis=null;
 		taskInfo=null;

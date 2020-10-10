@@ -7,8 +7,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
- 
+
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -17,10 +19,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+
+import gui.Home;
  
-public class MyProgress {
+public class MyProgress{
  
-    private JFrame mainFrame;
+    private JDialog mainFrame;
     private JLabel headerLabel;
     private JLabel statusLabel;
     private JPanel controlPanel;
@@ -28,13 +32,19 @@ public class MyProgress {
  
     public MyProgress(){
        prepareGUI();
+       
     }
  
  
     private void prepareGUI() {
-        mainFrame = new JFrame("Loading...");
+        mainFrame = new JDialog(Home.it);
         mainFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+//        mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+       
+        mainFrame.setUndecorated(true);
+        mainFrame.getRootPane().setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.black));
         mainFrame.setBounds(400,500,200,100);
+        mainFrame.setLocationRelativeTo(null);
         mainFrame.setSize(200, 100);
         mainFrame.setLayout(new GridLayout(3, 1));
         mainFrame.setResizable(false);
@@ -73,6 +83,7 @@ public class MyProgress {
         task.start();
         controlPanel.add(progressBar);
         mainFrame.setVisible(true);
+//        Home.it.setEnabled(true);
     }
  
     private class Task extends Thread {

@@ -10,10 +10,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import gui.common.MyFrame;
 import gui.panels.ProjectInfo;
 import model.Project;
 
-public class ProjectInformation extends JFrame {
+public class ProjectInformation extends MyFrame {
 
 	private JPanel contentPane;
 	private Project pj;
@@ -42,6 +43,7 @@ public class ProjectInformation extends JFrame {
 		setTitle("Project Information");
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));

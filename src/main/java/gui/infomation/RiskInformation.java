@@ -10,11 +10,14 @@ import javax.swing.border.EmptyBorder;
 import model.risk.Risk;
 import javax.swing.JButton;
 import javax.swing.border.TitledBorder;
+
+import gui.common.MyFrame;
+
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 
-public class RiskInformation extends JFrame {
+public class RiskInformation extends MyFrame {
 
 	private JPanel contentPane;
 	private Risk risk;
@@ -53,6 +56,7 @@ public class RiskInformation extends JFrame {
 		}
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
