@@ -1,4 +1,4 @@
-package gui.panels;
+package gui.common;
 
 import java.awt.Color;
 
@@ -24,8 +24,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import algorithms.pert.Pert;
-import gui.common.MyButton;
-import gui.common.MyFrame;
+import gui.panels.DescriptionPanel;
+import gui.panels.StatusBar;
+import gui.panels.TaskNetPanel;
 import model.Project;
 import model.dimension.Dimension;
 import model.task.Task;

@@ -66,7 +66,8 @@ public class TaskNetPanel extends NetPanel {
 	private Project pj;
 	private Vertex[] vertex;
 	private VertexDisplayPredicate show_vertex;
-
+	private Map<Integer,List<Task>> weightList;
+	private int mainPath=0;
 	/**
 	 * Launch the application.
 	 */
@@ -75,25 +76,22 @@ public class TaskNetPanel extends NetPanel {
 		super();
 		this.pj = pj;
 		this.tasks = pj.getTasks();
-		
 
-		
-		String probStr = Utils.round(pj.getProb()*100);
+		String probStr = Utils.round(pj.getProb() * 100);
 		String critPathStr = "";
-		double totalTimeP =0;
-		for(Task t:pj.getCriticalPath()) {
-			critPathStr = critPathStr+t.getName()+" -->";
-			totalTimeP+=t.getExpectedTime();
-			
+		double totalTimeP = 0;
+		for (Task t : pj.getCriticalPath()) {
+			critPathStr = critPathStr + t.getName() + " -->";
+			totalTimeP += t.getExpectedTime();
+
 		}
 		String projectName = "Project";
-		if(pj instanceof Dimension) {
+		if (pj instanceof Dimension) {
 			Dimension d = (Dimension) pj;
-			projectName = "Dimension "+d.getName();
-			
-			
+			projectName = d.getName() + "Dimension ";
+
 		}
-		JLabel projectLabel = new JLabel(projectName+" probability: " +probStr+"% ,");
+		JLabel projectLabel = new JLabel(projectName + " probability: " + probStr + "% ,");
 		projectLabel.setFont(new Font("Arial", Font.ITALIC, 17));
 		JLabel duration = new JLabel("Duration: " + Utils.round(totalTimeP));
 		duration.setFont(new Font("Arial", Font.ITALIC, 17));
@@ -103,6 +101,8 @@ public class TaskNetPanel extends NetPanel {
 		vv.add(duration);
 		vv.revalidate();
 		vv.repaint();
+		// generate weight Map;
+	
 //		setVisible(true);
 	}
 
@@ -183,7 +183,8 @@ public class TaskNetPanel extends NetPanel {
 		pr.setVertexPaintFunction(new MyVertexPaintFunction(pj));
 		pr.setVertexShapeFunction(new MyVertexShapeFunction());
 		pr.setVertexStrokeFunction(new MyVertexStrokeFunction());
-
+		
+		
 		pr.setEdgePaintFunction(new MyEdgePaintFunction());
 		pr.setEdgeStrokeFunction(new MyEdgeWeightStrokeFunction());
 		show_vertex = new VertexDisplayPredicate(false, 0, taskVertexMap);
@@ -194,7 +195,7 @@ public class TaskNetPanel extends NetPanel {
 
 	@Override
 	public void setLayout() {
-		java.awt.Dimension d = new java.awt.Dimension(1000,600);
+		java.awt.Dimension d = new java.awt.Dimension(1000, 600);
 		layout.initialize(new java.awt.Dimension(700, 600), new MyVertexLocationFunction(d));
 
 	}
@@ -397,6 +398,22 @@ public class TaskNetPanel extends NetPanel {
 		public MyVertexLocationFunction(java.awt.Dimension d) {
 			this.dim = d;
 			this.rand = new DRand((int) (new Date().getTime()));
+			weightList= new HashMap<Integer, List<Task>>();
+			for(int i=0;i<10;i++) {
+				List<Task> temp = new ArrayList<Task>();
+				for(Task t:tasks) {
+					if(t.getId()==i) {
+						temp.add(t);
+					}
+				}
+				System.out.println("task weight :"+i);
+				for(Task t : temp) {
+				
+					System.out.println(t.getName());
+				}
+				weightList.put(i, temp);
+			}
+//			System.out.println("wight list:"+weightList.size());
 		}
 
 		public void reset() {
@@ -405,48 +422,94 @@ public class TaskNetPanel extends NetPanel {
 
 		public Point2D getLocation(ArchetypeVertex v) {
 			Point2D location = (Point2D) v_locations.get(v);
+			double distance = 150;
 			
+			int flg =-1;
 			if (location == null) {
-				Vertex v1 = (Vertex) v;
-				if (getTaskByVertex(v1).getName().equals("B")) {
-					location = new Point2D.Double(200+220.5, 441);
-				}
-				if (getTaskByVertex(v1).getName().equals("C")) {
-					location = new Point2D.Double(200+371.0, 437.5);
-				}
-				if (getTaskByVertex(v1).getName().equals("D")) {
-					location = new Point2D.Double(200+220.5, 161.0);
-				}
-				if (getTaskByVertex(v1).getName().equals("E")) {
-					location = new Point2D.Double(200+260.0, 298.66666);
-				}
-				if (getTaskByVertex(v1).getName().equals("F")) {
-					location = new Point2D.Double(200+364.0, 161.0);
-				}
-				if (getTaskByVertex(v1).getName().equals("G")) {
-					location = new Point2D.Double(200+435.16666, 360.5);
-				}
-				if (getTaskByVertex(v1).getName().equals("H")) {
-					location = new Point2D.Double(200+521.5, 295.16666);
-				}
-				if (getTaskByVertex(v1).getName().equals("I")) {
-					location = new Point2D.Double(200+646.3333, 165.66667);
-				}
-				if (getTaskByVertex(v1).getName().equals("J")) {
-					location = new Point2D.Double(200+654.5, 297.5);
-				}
-
+				Vertex v1 = (Vertex) v;	
+				Task t = taskVertexMap.get(v1);
 				if (v1.getOutEdges().size() == 0) {
 					location = new Point2D.Double(dim.width, dim.height / 2);
+					mainPath++;
+				}else {
+					location = new Point2D.Double(100+t.getId()*distance,dim.height / 2);
+					if(weightList.get(t.getId())!=null) {
+//						System.out.println("not null"+t.getName());
+						for(int i=0;i<weightList.get(t.getId()).size();i++) {
+						
+							List<Task> temp = weightList.get(t.getId());
+							for(int j=0;j<temp.size();j++) {
+								if(temp.get(j)==t) {
+									
+									location = new Point2D.Double(100+t.getId()*distance,dim.height / 2+j*100);
+									if(j== 0) {
+										if(mainPath==2) {
+											System.out.println("main Path =2"+t.getName());
+											location = new Point2D.Double(100+t.getId()*distance,dim.height / 2+j*100-50);
+											mainPath=0;
+										}else {
+											location = new Point2D.Double(100+t.getId()*distance,dim.height / 2+j*100);
+											mainPath++;
+										}
+										
+									}else {
+										if(j%2==0) {
+											location = new Point2D.Double(100+t.getId()*distance,dim.height / 2-(j-1)*100);
+											
+										}else {
+											location = new Point2D.Double(100+t.getId()*distance,dim.height / 2+j*100);
+										}
+									}
+									flg = -1*flg;
+									
+//									System.out.println("task id "+t.getName()+" weight:"+t.getId());
+									
+								}
+							}
+						}
+					}else {
+						System.out.println("null weight list :"+t.getName());
+					}
 				}
-				if (v1.getInEdges().size() == 0) {
-					location = new Point2D.Double(200+100, dim.height / 2);
-				}
+				
+				
+//				if (getTaskByVertex(v1).getName().equals("B")) {
+					
+//					location = new Point2D.Double(dim.width, 0);
+//				}
+//				if (getTaskByVertex(v1).getName().equals("C")) {
+//					location = new Point2D.Double(200 + 371.0, 437.5);
+//				}
+//				if (getTaskByVertex(v1).getName().equals("D")) {
+//					location = new Point2D.Double(200 + 220.5, 161.0);
+//				}
+//				if (getTaskByVertex(v1).getName().equals("E")) {
+//					location = new Point2D.Double(200 + 260.0, 298.66666);
+//				}
+//				if (getTaskByVertex(v1).getName().equals("F")) {
+//					location = new Point2D.Double(200 + 364.0, 161.0);
+//				}
+//				if (getTaskByVertex(v1).getName().equals("G")) {
+//					location = new Point2D.Double(200 + 435.16666, 360.5);
+//				}
+//				if (getTaskByVertex(v1).getName().equals("H")) {
+//					location = new Point2D.Double(200 + 521.5, 295.16666);
+//				}
+//				if (getTaskByVertex(v1).getName().equals("I")) {
+//					location = new Point2D.Double(200 + 646.3333, 165.66667);
+//				}
+//				if (getTaskByVertex(v1).getName().equals("J")) {
+//					location = new Point2D.Double(200 + 654.5, 297.5);
+//				}
+
+				
+//				if (v1.getInEdges().size() == 0) {
+//					location = new Point2D.Double(200 + 100, dim.height / 2);
+//				}
 				v_locations.put(v, location);
 			}
 			return location;
 		}
-
 		public Iterator getVertexIterator() {
 			return v_locations.keySet().iterator();
 		}

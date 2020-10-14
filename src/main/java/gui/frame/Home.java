@@ -1,4 +1,4 @@
-package gui;
+package gui.frame;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -31,16 +31,17 @@ import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import config.Configuaration;
 import gui.common.IconGenerator;
+import gui.common.MainResult;
 import gui.common.MyButton;
 import gui.common.MyFrame;
 import gui.common.MyLabel;
 import gui.common.MyProgress;
 import gui.common.ThreadSimple;
 import gui.panels.FindTask;
-import gui.panels.MainResult;
 import gui.panels.SpiderMappingPanel;
 import model.Project;
 import model.dimension.Dimension;
@@ -84,12 +85,12 @@ public class Home extends MyFrame implements ActionListener {
 	private JLabel riskDisLabel;
 	private JButton multiImport;
 	public static Home it;
-	private String instructions = "<html>" + "<h3>Instructions:</h3>" 
-			+ "<p> First, enter your input in Input Screen</p>" 
+	private String instructions = "<html>" + "<h3>Instructions:</h3>"
+			+ "<p> First, enter your input in Input Screen</p>"
 			+ "<p> If you want show taskNet click to<span style='font-style:italic;color:#9C5D5D'>Result </span> to show result</p>"
-			+ "<p> Click<span style='font-style:italic;color:#9C5D5D'> Tools ->'the functions which you want to use'</span></p>" 
+			+ "<p> Click<span style='font-style:italic;color:#9C5D5D'> Tools ->'the functions which you want to use'</span></p>"
 			+ "<p> Click <span style='font-style:italic;color:#9C5D5D'>File -> input</span> to reset Input</p>"
-			+ "<p> Click <span style='font-style:italic;color:#9C5D5D'>File -> exit</span> to exit program</p>" 
+			+ "<p> Click <span style='font-style:italic;color:#9C5D5D'>File -> exit</span> to exit program</p>"
 			+ "</html>";
 	private String aboutUs = "<html>" + "<div>" + "<h3 >Risk measurement Tools</h3>"
 			+ "<div style = 'font-style: italic;'>" + "<p>Version: 1.1.0</p>"
@@ -151,7 +152,7 @@ public class Home extends MyFrame implements ActionListener {
 		});
 		file.add(inputItem);
 		JMenuItem eMenuItem = new JMenuItem("Exit");
-		eMenuItem.setIcon(IconGenerator.getIcon(Configuaration.imagesPath+"exit.png", 13, 13));
+		eMenuItem.setIcon(IconGenerator.getIcon(Configuaration.imagesPath + "exit.png", 13, 13));
 		eMenuItem.setMnemonic(KeyEvent.VK_E);
 		eMenuItem.addActionListener(new ActionListener() {
 			@Override
@@ -167,7 +168,7 @@ public class Home extends MyFrame implements ActionListener {
 
 		JMenuItem findTask = new JMenuItem("Find Task");
 		findTask.setMnemonic(KeyEvent.VK_F);
-		findTask.setIcon(IconGenerator.getIcon(Configuaration.imagesPath+"search.png", 13, 13));
+		findTask.setIcon(IconGenerator.getIcon(Configuaration.imagesPath + "search.png", 13, 13));
 		tools.add(findTask);
 		menubar.add(tools);
 		findTask.addActionListener(new ActionListener() {
@@ -175,7 +176,7 @@ public class Home extends MyFrame implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (pj == null) {
-					addLog("Empty Input");
+					addLog("\nEmpty Input");
 					JOptionPane.showMessageDialog(null, "You must enter your 'input' to use this feature",
 							"Input empty", JOptionPane.ERROR_MESSAGE);
 				} else {
@@ -193,7 +194,7 @@ public class Home extends MyFrame implements ActionListener {
 
 		JMenuItem spider = new JMenuItem("Spider Mapping");
 		tools.add(spider);
-		spider.setIcon(IconGenerator.getIcon(Configuaration.imagesPath+"spider.png", 13, 13));
+		spider.setIcon(IconGenerator.getIcon(Configuaration.imagesPath + "spider.png", 13, 13));
 		spider.addActionListener(new ActionListener() {
 
 			@Override
@@ -201,7 +202,7 @@ public class Home extends MyFrame implements ActionListener {
 				// TODO Auto-generated method stub
 
 				if (pj == null) {
-					addLog("Empty Input");
+					addLog("\nEmpty Input");
 					JOptionPane.showMessageDialog(null, "You must enter your 'input' to use this feature",
 							"Input empty", JOptionPane.ERROR_MESSAGE);
 				} else {
@@ -275,7 +276,7 @@ public class Home extends MyFrame implements ActionListener {
 		JMenu help = new JMenu("Help");
 		help.setMnemonic(KeyEvent.VK_H);
 		JMenuItem howToUse = new JMenuItem("How to use");
-		howToUse.setIcon(IconGenerator.getIcon(Configuaration.imagesPath+"how.png", 13, 13));
+		howToUse.setIcon(IconGenerator.getIcon(Configuaration.imagesPath + "how.png", 13, 13));
 		howToUse.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -286,7 +287,7 @@ public class Home extends MyFrame implements ActionListener {
 		});
 		help.add(howToUse);
 		JMenuItem about = new JMenuItem("About");
-		about.setIcon(IconGenerator.getIcon(Configuaration.imagesPath+"about.png", 13, 13));
+		about.setIcon(IconGenerator.getIcon(Configuaration.imagesPath + "about.png", 13, 13));
 		about.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -313,72 +314,86 @@ public class Home extends MyFrame implements ActionListener {
 
 		contentPane.add(input);
 
-		exeButton = new MyButton("Import",10);
+		exeButton = new MyButton("Import", 10);
+		exeButton.setToolTipText("Click to import resources");
 		exeButton.setIcon(IconGenerator.getImportIcon(12, 12));
 		exeButton.setBounds(119, 183, 89, 23);
 		exeButton.addActionListener(this);
 		input.add(exeButton);
 
-		resetInput = new MyButton("Reset", 10,IconGenerator.getIcon(Configuaration.imagesPath+"reset.png", 14, 14));
+		resetInput = new MyButton("Reset", 10, IconGenerator.getIcon(Configuaration.imagesPath + "reset.png", 14, 14));
 		resetInput.addActionListener(this);
 		resetInput.setBounds(239, 91, 53, 23);
+		resetInput.setToolTipText("Click for reset all resource which you have imported");
 		input.add(resetInput);
-
-		taskInput = new JPanel();
+		
+		taskInput = new JPanel();	
 		taskInput.setBorder(new TitledBorder(null, "Task Input", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		
 		taskInput.setBounds(10, 25, 223, 147);
 		input.add(taskInput);
 		taskInput.setLayout(null);
 
 		taskDistribute = new MyLabel("Task Distribution", 10);
 		taskDistribute.setBounds(10, 21, 112, 27);
-
-		taskDisButton = new MyButton("Browse", 10,IconGenerator.getIcon(Configuaration.imagesPath+"browse1.png", 14, 14));
+		
+		taskDisButton = new MyButton("Browse", 10,IconGenerator.getIcon(Configuaration.imagesPath + "browse1.png", 14, 14));
+		taskDisButton.setToolTipText("<html><div style ='display:block;width:100px'>The document contain probability distribution of all tasks in your project</div></html>");
 		taskDisButton.setBounds(113, 26, 70, 17);
 
 		taskInfoLabel = new MyLabel("Task Info", 10);
 		taskInfoLabel.setBounds(10, 54, 112, 27);
 
-		taskInfoButton = new MyButton("Browse", 10,IconGenerator.getIcon(Configuaration.imagesPath+"browse1.png", 14, 14));
+		taskInfoButton = new MyButton("Browse", 10,
+				IconGenerator.getIcon(Configuaration.imagesPath + "browse1.png", 14, 14));
+		taskInfoButton.setToolTipText("<html><div style ='display:block;width:100px'>The document contain relations between all tasks in your project</div></html>");
 		taskInfoButton.setBounds(113, 59, 70, 17);
 
 		dInforLabel = new MyLabel("DimensionInfo", 10);
 		dInforLabel.setBounds(10, 87, 106, 27);
 
-		DInfoButton = new MyButton("Browse", 10,IconGenerator.getIcon(Configuaration.imagesPath+"browse1.png", 14, 14));
+		DInfoButton = new MyButton("Browse", 10,
+				IconGenerator.getIcon(Configuaration.imagesPath + "browse1.png", 14, 14));
 		DInfoButton.setBounds(113, 92, 70, 17);
-
+		DInfoButton.setToolTipText("<html><div style ='display:block;width:100px'>The document contain informations of dimensions</div></html>");
 		riskInput = new JPanel();
 		riskInput.setBorder(new TitledBorder(null, "Risk Input", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		riskInput.setBounds(302, 25, 237, 147);
 		input.add(riskInput);
 		riskInput.setLayout(null);
 
-		riskInfoButton = new MyButton("Browse", 10,IconGenerator.getIcon(Configuaration.imagesPath+"browse1.png", 14, 14));
+		riskInfoButton = new MyButton("Browse", 10,
+				IconGenerator.getIcon(Configuaration.imagesPath + "browse1.png", 14, 14));
 		riskInfoButton.setBounds(123, 32, 70, 17);
+		riskInfoButton.setToolTipText("<html><div style ='display:block;width:100px'>The document contain information of all risks in your risk model</div></html>");;
 
 		riskRelateLabel = new MyLabel("Risk Relation", 10);
 		riskRelateLabel.setBounds(28, 58, 112, 27);
 
-		riskRelateButton = new MyButton("Browse", 10,IconGenerator.getIcon(Configuaration.imagesPath+"browse1.png", 14, 14));
+		riskRelateButton = new MyButton("Browse", 10,
+				IconGenerator.getIcon(Configuaration.imagesPath + "browse1.png", 14, 14));
 		riskRelateButton.setBounds(123, 63, 70, 17);
+		riskRelateButton.setToolTipText("<html><div style ='display:block;width:100px'>The document contain relations between all risks in your project</div></html>");;
 
-		riskDisButton = new MyButton("Browse", 10,IconGenerator.getIcon(Configuaration.imagesPath+"browse1.png", 14, 14));
+		riskDisButton = new MyButton("Browse", 10,
+				IconGenerator.getIcon(Configuaration.imagesPath + "browse1.png", 14, 14));
 		riskDisButton.setBounds(123, 97, 70, 17);
-
+		riskDisButton.setToolTipText("<html><div style ='display:block;width:100px'>The document contain probability distribution of all risks in your project</div></html>");
 		riskInfoLabel = new MyLabel("Risk Info", 10);
 		riskInfoLabel.setBounds(28, 27, 112, 27);
 
 		riskDisLabel = new MyLabel("Risk Distribution", 10);
 		riskDisLabel.setBounds(28, 92, 112, 27);
 
-		multiImport = new MyButton("AutoSet",10);
-		multiImport.setIcon(IconGenerator.getIcon(Configuaration.imagesPath+"auto.png", 13, 13));
+		multiImport = new MyButton("AutoSet", 10);
+		multiImport.setIcon(IconGenerator.getIcon(Configuaration.imagesPath + "auto.png", 13, 13));
 		multiImport.addActionListener(this);
+		multiImport.setToolTipText("<html><div style ='display:block;width:100px'>Auto get resoures from specified folder then import them</div></html>");
 		multiImport.setBounds(20, 183, 89, 23);
 		input.add(multiImport);
 
 		showResult = new JButton("Result");
+		showResult.setToolTipText("<html><div style ='display:block;width:100px'>Show task map which contain all information of your tasks with network visualization</div></html>");
 		showResult.setBounds(400, 183, 89, 23);
 		input.add(showResult);
 		showResult.addActionListener(this);
@@ -435,15 +450,18 @@ public class Home extends MyFrame implements ActionListener {
 		}
 		if (e.getSource() != exeButton && e.getSource() != resetInput && e.getSource() != showResult
 				&& e.getSource() != multiImport) {
-			//delete auto set button
+			// delete auto set button
 			input.remove(multiImport);
-			input.revalidate();
-			input.repaint();
+			updateJPanel(input);
+
 			fc = new JFileChooser(Configuaration.inputPath);
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("Only csv file","csv");
+			fc.setFileFilter(filter);
 			int returnVal = fc.showOpenDialog(Home.this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				logStr = new StringBuilder();
 				File file = fc.getSelectedFile();
+				
 				if (e.getSource() == taskInfoButton) {
 					taskInfo = file.getPath();
 					String redStr = "Task info:";
@@ -455,34 +473,34 @@ public class Home extends MyFrame implements ActionListener {
 				}
 				if (e.getSource() == taskDisButton) {
 					taskDis = file.getPath();
-					addLog("Task Distribution:\n" + "Importing file ...." + file.getName() + "\n");
+					addLog("\nTask Distribution:\n" + "Importing file ...." + file.getName() + "\n");
 					inputModel.setTaskDis(taskDis);
 					updateInputGUI(file.getName(), taskDisButton, taskInput);
 
 				}
 				if (e.getSource() == riskInfoButton) {
 					riskInfo = file.getPath();
-					addLog("Risk info:\n" + "Importing file ...." + file.getName() + "\n");
+					addLog("\nRisk info:\n" + "Importing file ...." + file.getName() + "\n");
 					inputModel.setRiskInfo(riskInfo);
 					updateInputGUI(file.getName(), riskInfoButton, riskInput);
 				}
 				if (e.getSource() == riskRelateButton) {
 					riskRelate = file.getPath();
-					addLog("Risk relations:\n" + "Importing file ..." + file.getName() + "\n");
+					addLog("\nRisk relations:\n" + "Importing file ..." + file.getName() + "\n");
 					inputModel.setRiskRelate(riskRelate);
 					updateInputGUI(file.getName(), riskRelateButton, riskInput);
 
 				}
 				if (e.getSource() == riskDisButton) {
 					riskDis = file.getPath();
-					addLog("Risk Distribution:\n" + "Importing file ...." + file.getName() + "\n");
+					addLog("\nRisk Distribution:\n" + "Importing file ...." + file.getName() + "\n");
 					inputModel.setRiskDis(riskDis);
 					updateInputGUI(file.getName(), riskDisButton, riskInput);
 
 				}
 				if (e.getSource() == DInfoButton) {
 					DInfo = file.getPath();
-					addLog("Dimension Info:\n" + "Importing file ...." + file.getName() + "\n");
+					addLog("\nDimension Info:\n" + "Importing file ...." + file.getName() + "\n");
 					inputModel.setDimensionInfo(DInfo);
 					updateInputGUI(file.getName(), DInfoButton, taskInput);
 				}
@@ -492,9 +510,9 @@ public class Home extends MyFrame implements ActionListener {
 		} else {
 			if (e.getSource() == multiImport) {
 				input.remove(exeButton);
-				input.revalidate();
-				input.repaint();
-				addLog("Auto Set Input From Folder :" + Configuaration.inputPath);
+				updateJPanel(input);
+
+				addLog("\nAuto Set Input From Folder :" + Configuaration.inputPath);
 				setEnabled(false);
 				ThreadSimple t1 = new ThreadSimple("Reading Resources ...");
 				t1.start();
@@ -523,7 +541,7 @@ public class Home extends MyFrame implements ActionListener {
 						pj = new Project(inputModel, 40);
 						pj.update();
 						pj.calcProb();
-						JOptionPane.showMessageDialog(null, "Resources are updated");
+						JOptionPane.showMessageDialog(null, "Resources are updated","Message",JOptionPane.INFORMATION_MESSAGE);
 						Home.it.setVisible(true);
 						Home.it.setEnabled(true);
 
@@ -534,42 +552,40 @@ public class Home extends MyFrame implements ActionListener {
 
 			}
 			if (e.getSource() == showResult) {
-				addLog("Generate GUI");
+				addLog("\nGenerate GUI");
 				showDetail();
-				addLog("Task Network Visualization");
+				addLog("\nTask Network Visualization");
 
 			}
 			if (e.getSource() == resetInput) {
 				input.add(exeButton);
 				input.add(multiImport);
-				input.revalidate();
-				input.repaint();
-				addLog("Reset input");
+				updateJPanel(input);
+
+				addLog("\nReset input");
 				pj = null;
 				inputModel.reset();
 				taskInput.removeAll();
 				riskInput.removeAll();
 				initInputComp();
-				taskInput.revalidate();
-				taskInput.repaint();
-				riskInput.revalidate();
-				riskInput.repaint();
+				updateJPanel(taskInput);
+
+				updateJPanel(riskInput);
+
 				log.setText("");
 				log.revalidate();
 				log.repaint();
-				input.revalidate();
-				input.repaint();
+				updateJPanel(input);
 
 			}
 			if (e.getSource() == exeButton) {
-				
-			
+
 				/* execute the program */
 
 				String checkInput = inputModel.checkEmpty();
 				if (checkInput.equals("OK")) {
 					setEnabled(false);
-					addLog("Importing Resource...");
+					addLog("\nImporting Resource...");
 					ThreadSimple t1 = new ThreadSimple("Importing Resource...");
 					t1.start();
 					Thread t2 = new Thread(new Runnable() {
@@ -584,8 +600,8 @@ public class Home extends MyFrame implements ActionListener {
 							} catch (Exception e) {
 								JOptionPane.showMessageDialog(null, "Import Fails!\nResoure is invalid!", "ERRORS",
 										JOptionPane.ERROR_MESSAGE);
-								pj=null;
-								
+								pj = null;
+
 								// TODO: handle exception
 							}
 							Home.it.setVisible(true);
@@ -593,8 +609,9 @@ public class Home extends MyFrame implements ActionListener {
 						}
 					});
 					t2.start();
-					if(pj==null) t1.stop();
-					addLog("Resources are updated");
+					if (pj == null)
+						t1.stop();
+					addLog("\nResources are updated");
 				} else {
 					JOptionPane.showMessageDialog(null, checkInput + " is Empty", "Errors", JOptionPane.ERROR_MESSAGE);
 				}
@@ -606,7 +623,7 @@ public class Home extends MyFrame implements ActionListener {
 
 	public void showDetail() {
 		if (pj == null) {
-			addLog("Empty Input");
+			addLog("\nEmpty Input");
 			JOptionPane.showMessageDialog(null, "You must enter your 'input' to use this feature", "Input empty",
 					JOptionPane.ERROR_MESSAGE);
 		} else {
@@ -623,13 +640,19 @@ public class Home extends MyFrame implements ActionListener {
 					}
 					MainResult rs = new MainResult(pj);
 					rs.run();
-					addLog("Bayesian Network Visualization ....");
+					addLog("\nBayesian Network Visualization ....");
 					Home.it.setVisible(true);
 					Home.it.setEnabled(true);
 				}
 			});
 			t3.start();// if t1 is finished then t2 will start
 		}
+
+	}
+
+	public void updateJPanel(JPanel p) {
+		p.revalidate();
+		p.repaint();
 
 	}
 
@@ -641,7 +664,7 @@ public class Home extends MyFrame implements ActionListener {
 		label.setBounds(button.getBounds());
 		label.setSize(100, 20);
 		panel.add(label);
-		input.revalidate();
-		input.repaint();
+		updateJPanel(input);
+
 	}
 }

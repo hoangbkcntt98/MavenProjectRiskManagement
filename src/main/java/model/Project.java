@@ -95,7 +95,7 @@ public class Project {
 			taskNet.calcProb();
 		}
 		for (Task t : tasks) {
-			System.out.println("Probability of Task " + t.getName() + " is :" + t.getProb());
+			System.out.println("Probability of Task " +t.getId()+ t.getName() + " is :" + t.getProb());
 		}
 		System.out.println("Probability of project : " + getProb());
 

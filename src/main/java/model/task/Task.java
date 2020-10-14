@@ -21,6 +21,7 @@ public class Task {
 	double lf;
 	double slack=-1;
 	double prob;
+	int weight;
 	List<Task> predecessor;
 	List<Task> successor;
 	List<Double> probList;
@@ -31,6 +32,19 @@ public class Task {
 			double pessimistic) {
 		super();
 		this.id = id;
+		this.name = name;
+		this.optimistic = optimistic;
+		this.mostlikely = mostlikely;
+		this.pessimistic = pessimistic;
+		this.expectedTime = Pert.estimateDuration(this.optimistic, this.mostlikely, this.pessimistic);
+		this.variance = Pert.variance(this.optimistic, this.mostlikely, this.pessimistic);
+		this.standardDeviation = Pert.standardDeviation(this.optimistic, this.mostlikely, this.pessimistic);
+	}
+	public Task(int id, String name,double optimistic, double mostlikely,
+			double pessimistic,int weight) {
+		super();
+		this.id = id;
+		this.weight = weight;
 		this.name = name;
 		this.optimistic = optimistic;
 		this.mostlikely = mostlikely;
@@ -173,6 +187,14 @@ public class Task {
 
 	public void setRisks(List<Risk> risks) {
 		this.risks = risks;
+	}
+
+	public int getWeight() {
+		return weight;
+	}
+
+	public void setWeight(int weight) {
+		this.weight = weight;
 	}
 	
 	

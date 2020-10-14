@@ -20,7 +20,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import gui.Home;
+import gui.frame.Home;
  
 public class MyProgress{
  
